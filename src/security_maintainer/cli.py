@@ -338,7 +338,7 @@ def main(argv=None):
 
     parser = argparse.ArgumentParser(
         prog="security-maintainer",
-        description="Mantenimiento y remediación de vulnerabilidades para Windows y distribuciones WSL."
+        description="Mantenimiento y remediación de vulnerabilidades para Windows, macOS y distribuciones Linux/WSL."
     )
     parser.add_argument("--config", help="Ruta al archivo de configuración personalizado.")
     subparsers = parser.add_subparsers(dest="command", required=True)

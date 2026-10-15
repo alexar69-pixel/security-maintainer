@@ -52,10 +52,9 @@ triggers:
   - "security-maintainer: genera un plan de remediación para vulnerabilidades"
   - "security-maintainer: aplica el plan de seguridad aprobado"
   - "security-maintainer: verifica el estado de las correcciones de seguridad"
-  - "Revisa las vulnerabilidades de mi sistema y software"
-  - "Audita las aplicaciones desactualizadas y CVEs conocidos"
-  - "Genera un plan de parches de seguridad para mis programas"
-  - "Verifica si los parches de seguridad quedaron solucionados"
+  - "security-maintainer: audit system software and vulnerabilities"
+  - "security-maintainer: generate security remediation plan"
+  - "security-maintainer: apply approved security plan"
 ---
 
 # Security Maintainer para OpenClaw
@@ -85,9 +84,9 @@ Skill universal para OpenClaw diseñada para auditar software en Windows, macOS,
 ## Modos de Operación
 
 1. **`audit` (Solo lectura):**
-   - Recopila el inventario de Windows (WinGet, Registro, AppX, Windows Update) y WSL (distros, apt/dpkg/rpm/apk, kernel WSL).
+   - Recopila el inventario de Windows (WinGet, Registro, AppX, Windows Update), macOS y Linux/WSL.
    - Consulta fuentes de vulnerabilidades locales y remotas en modo seguro.
-   - Genera informes en Markdown y JSON en español sin realizar cambios ni bloquear componentes.
+   - Genera informes estructurados en Markdown y JSON con soporte bilingüe sin realizar cambios ni bloquear componentes.
 
 2. **`ask` (Modo predeterminado):**
    - Ejecuta la fase de auditoría.

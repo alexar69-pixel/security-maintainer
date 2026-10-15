@@ -155,16 +155,14 @@ python3 -m security_maintainer.cli report
 
 ---
 
-## 8. Programación de Revisiones Periódicas
-
-Para programar auditorías automáticas periódicas (en modo de solo lectura `audit`), se recomienda utilizar el comando `/schedule` integrado de OpenClaw:
+Para ejecutar revisiones periódicas mediante el programador de tareas del agente, se puede configurar una tarea en OpenClaw:
 
 ```text
-/schedule cron="0 9 * * 1" prompt="Revisa las vulnerabilidades de mi PC y genera un informe de auditoría"
+/schedule cron="0 9 * * 1" prompt="security-maintainer: audita el software del sistema y vulnerabilidades"
 ```
 
-> [!IMPORTANT]
-> Las auditorías periódicas programadas se ejecutan exclusivamente en modo de solo lectura (`audit`). La skill no aplica cambios automáticos ni establece procesos residentes o tareas persistentes en el sistema operativo.
+> [!NOTE]
+> Las revisiones periódicas se ejecutan bajo el ciclo de vida del agente en modo de solo lectura (`audit`). No se instalan servicios daemon permanentes en el sistema operativo del anfitrión.
 
 ---
 

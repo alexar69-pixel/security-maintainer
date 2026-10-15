@@ -1,6 +1,10 @@
 # Arquitectura Técnica de `security-maintainer`
+ 
+> [!WARNING]
+> **Aviso de Seguridad y Alcance del Sistema:**
+> `security-maintainer` opera sobre componentes de sistema operativo (Windows, macOS, distribuciones Linux/WSL) y dependencias de proyectos. Las operaciones de actualización modifican binarios o librerías del sistema. Para preservar la integridad del entorno, el modo predeterminado es estrictamente `ask` (requiere plan numerado, hash SHA-256 inmutable y confirmación explícita del usuario). Nunca aplique el modo automático (`auto`) sin haber auditado previamente el impacto en los servicios instalados.
 
-`security-maintainer` está diseñado bajo un modelo desacoplado y determinista para operar en entornos híbridos donde el agente OpenClaw se ejecuta dentro de WSL (usuario `openclaw`) y gestiona tanto las distribuciones Linux locales como el sistema anfitrión Windows.
+`security-maintainer` está diseñado bajo un modelo desacoplado y determinista para operar en entornos híbridos donde el agente OpenClaw se ejecuta dentro de WSL o nativamente en el anfitrión (Windows, macOS, Linux).
 
 ## 1. Diagrama de Arquitectura de Alto Nivel
 
@@ -64,6 +68,10 @@ flowchart TD
 ---
 
 ## 2. Flujo de Estados y Ciclo de Vida del Plan
+
+> [!IMPORTANT]
+> **Advertencia sobre Modos de Ejecución:**
+> Los cambios sobre paquetes y librerías del sistema conllevan riesgos de incompatibilidad o reinicio de servicios. Se debe auditar siempre el plan antes de considerar cualquier modo no supervisado.
 
 El motor opera bajo tres modos estrictos: `audit`, `ask` (predeterminado) y `auto`.
 

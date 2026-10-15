@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Script determinista para inspección segura de distribuciones WSL.
-# Solo lectura: NO modifica paquetes ni configuración.
+# Script determinista para inspección y simulación de actualizaciones en WSL.
+# Modo simulación: ejecuta consultas de solo lectura y dry-run (-s). No instala paquetes.
 
 set -euo pipefail
 

@@ -26,6 +26,6 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y s
   - Detección de reinicios pendientes (`/var/run/reboot-required` en Linux y claves de registro en Windows).
   - Control de elevación: Las acciones que requieren privilegios de Administrador o `sudo` se registran como bloqueadas si no están delegadas, sin intentos de elevación silenciosa.
 - **Informes:**
-  - Generación de informes duales en JSON y Markdown en español con advertencias claras ante fallos de fuentes de datos.
+  - Generación de informes duales en JSON y Markdown estructurados con soporte de internacionalización y advertencias claras ante fallos de fuentes de datos.
 - **Suite de Pruebas:**
   - Pruebas unitarias completas con fixtures para inventario, advisories, planificación, ejecución, verificación e interfaz CLI.

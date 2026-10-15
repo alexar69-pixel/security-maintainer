@@ -1,6 +1,8 @@
 <#
 .SYNOPSIS
+    Gathers Windows software and update inventory deterministically and safely.
     Recopila de forma determinista y segura el inventario de software de Windows.
+    Does NOT modify configuration or install software.
     NO realiza modificaciones de configuración ni instalaciones.
 #>
 
