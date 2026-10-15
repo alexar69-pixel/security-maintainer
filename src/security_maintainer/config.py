@@ -123,14 +123,19 @@ class ConfigManager:
         return config
 
     def save_user_config(self, new_config: Dict[str, Any]) -> bool:
-        """Guarda la configuración persistente en el directorio de usuario."""
+        """
+        Saves user configuration to local disk (~/.security-maintainer/config.json).
+        WARNING: Modifies persistent user preferences for subsequent runs.
+        """
         USER_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         try:
             with open(USER_CONFIG_FILE, "w", encoding="utf-8") as f:
                 json.dump(new_config, f, indent=2, ensure_ascii=False)
             self.config = new_config
+            logger.info(f"Configuración guardada en archivo persistente de usuario: {USER_CONFIG_FILE}")
             return True
-        except Exception:
+        except Exception as e:
+            logger.warning(f"No se pudo guardar la configuración de usuario: {e}")
             return False
 
     @property

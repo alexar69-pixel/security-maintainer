@@ -139,7 +139,7 @@ python3 -m security_maintainer.cli report --critical-only
 Cuando el usuario formula una petición en lenguaje natural:
 
 1. **"Revisa las vulnerabilidades de mi PC y WSL" o "Busca actualizaciones de todo el software"**:
-   - Ejecutar `audit`. Presentar el resumen en Markdown en español destacando cobertura, actualizaciones disponibles y vulnerabilidades confirmadas vs posibles.
+   - Ejecutar `audit`. Presentar el informe estructurado destacando cobertura, actualizaciones disponibles y vulnerabilidades confirmadas vs posibles.
 2. **"Actualiza las aplicaciones permitidas" o "Corrige las vulnerabilidades que tengan parche"**:
    - Generar el plan con `plan`.
    - Mostrar al usuario la lista ordenada de acciones, el hash del plan y los requisitos de permisos.

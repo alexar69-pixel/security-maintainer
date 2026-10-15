@@ -1,7 +1,7 @@
 {
   "name": "security-maintainer",
   "version": "1.2.0",
-  "description": "Skill universal de OpenClaw para auditoría y remediación de software en Windows, macOS y Linux/WSL, correlación de CVEs y defensa de seguridad en IA (inyección de prompts, servidores LLM expuestos, envenenamiento de herramientas MCP y fuga de claves).",
+  "description": "Universal OpenClaw skill for auditing and remediating software across Windows, macOS, and Linux/WSL, with CVE intelligence correlation and AI agent defense (prompt injection detection, unauthenticated LLM discovery, MCP security, and API key protection).",
   "main": "SKILL.md",
   "license": "Apache-2.0",
   "author": {

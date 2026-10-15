@@ -77,37 +77,17 @@ class CisaKevCatalog:
         return False
 
     def _fetch_remote(self) -> Optional[Dict[str, Any]]:
-        """Intenta descargar vía urllib y hace fallback a curl si está disponible."""
-        import subprocess
-        import shutil
-
-        # Intento con urllib
+        """Downloads official CISA KEV catalog via urllib."""
         try:
             req = urllib.request.Request(
                 self.url,
                 headers={"User-Agent": "OpenClaw-SecurityMaintainer/1.0 (+https://openclaw.dev)"}
             )
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=15) as resp:
                 return json.loads(resp.read().decode("utf-8"))
         except Exception as e:
-            logger.debug(f"urllib falló al consultar CISA KEV: {e}")
-
-        # Intento con curl si está presente en el sistema
-        curl_bin = shutil.which("curl")
-        if curl_bin:
-            try:
-                res = subprocess.run(
-                    [curl_bin, "-sL", "--max-time", "12", "-A", "OpenClaw-SecurityMaintainer/1.0", self.url],
-                    capture_output=True,
-                    text=True,
-                    timeout=15
-                )
-                if res.returncode == 0 and res.stdout.strip():
-                    return json.loads(res.stdout.strip())
-            except Exception as e:
-                logger.debug(f"curl falló al consultar CISA KEV: {e}")
-
-        return None
+            logger.debug(f"urllib request failed for CISA KEV: {e}")
+            return None
 
     def _parse_catalog(self, data: Dict[str, Any]) -> None:
         vulnerabilities = data.get("vulnerabilities", [])
