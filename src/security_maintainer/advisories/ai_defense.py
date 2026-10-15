@@ -96,17 +96,16 @@ class AIAgentSecurityAuditor:
                     )
         return findings
 
-    def audit_mcp_configurations(self) -> List[AISecurityFinding]:
+    def audit_mcp_configurations(self, search_paths: Optional[List[Path]] = None) -> List[AISecurityFinding]:
         """Audits Model Context Protocol (MCP) server configuration files for excessive agency."""
         findings = []
-        mcp_paths = [
-            Path.home() / ".openclaw" / "mcp.json",
-            Path.home() / ".gemini" / "antigravity" / "mcp",
-            Path.home() / "AppData" / "Roaming" / "Claude" / "claude_desktop_config.json",
-            Path.home() / ".config" / "claude" / "claude_desktop_config.json"
-        ]
+        # Strictly inspect only explicitly provided or user-configured paths to prevent unintended agent discovery
+        paths_to_audit: List[Path] = list(search_paths) if search_paths else []
+        configured_path = self.config.get("mcp_config_path")
+        if configured_path:
+            paths_to_audit.append(Path(configured_path))
 
-        for p in mcp_paths:
+        for p in paths_to_audit:
             if not p.exists():
                 continue
             

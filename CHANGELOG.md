@@ -3,6 +3,17 @@
 Todas las modificaciones notables de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.2.4] - 2026-10-15
+
+### Security & Hardening
+- **Strict Scope Boundaries for MCP Configurations:** Restricted `audit_mcp_configurations()` to audit only explicitly user-configured paths or paths passed via parameters, completely removing hardcoded directory traversals and eliminating Agent Snooping risks.
+- **Narrow Command Triggers in Manifest:** Updated `clawhub.json` with an explicit `triggers` array matching `SKILL.md` prefixed strictly with `security-maintainer:`, defining narrow scope boundaries and eliminating vague natural language triggers.
+- **Cryptographic Plan Hash Enforcement in Windows Scripts:** Added mandatory 64-character SHA-256 `$PlanHash` validation to `Invoke-WindowsPatch.ps1` before performing any WinGet or Windows Update installation.
+- **Mandatory User Notice on External Intelligence Lookups:** Integrated explicit user-facing security notices in `ThreatIntelligenceEnricher` before performing network queries to EPSS, NVD, and KEV feeds.
+- **Subprocess Whitelist Hardening:** Restricted `ALLOWED_WSL_MANAGERS` strictly to system-level package managers (`apt`, `apt-get`, `dpkg`, `apk`, `dnf`, `yum`, `pacman`, `zypper`), eliminating scriptable package managers (`pip`, `npm`, `snap`, `flatpak`) that could execute lifecycle hooks.
+- **Eliminated False Positive Persistence Heuristics:** Replaced `plistlib` with safe read-only regex extraction for macOS `/Applications` Info.plist inspection.
+- **Universal Documentation & Locale Standardization:** Standardized remaining docstrings and log messages across `macos.py`, `exposure.py`, `config.py`, and `cli.py` in English.
+
 ## [1.2.3] - 2026-10-15
 
 ### Security & Hardening

@@ -47,7 +47,7 @@ class TestPlatformAndMacOS(unittest.TestCase):
 
         self.assertEqual(len(items), 3)
         names = [i.name for i in items]
-        self.assertIn("Sistema Operativo macOS", names)
+        self.assertIn("macOS Operating System", names)
         self.assertIn("openssl@3", names)
         self.assertIn("visual-studio-code", names)
         self.assertEqual(items[0].target_name, "macOS Host")

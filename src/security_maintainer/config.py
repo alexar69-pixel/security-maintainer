@@ -1,5 +1,5 @@
 """
-Gestor de configuración persistente y validación de esquemas para Security Maintainer.
+Persistent configuration manager and schema validation for Security Maintainer.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ USER_CONFIG_FILE = USER_CONFIG_DIR / "config.json"
 
 
 def _parse_yaml_minimal(content: str) -> Dict[str, Any]:
-    """Lector básico de YAML para cuando pyyaml no está instalado."""
+    """Basic fallback YAML parser when pyyaml is not installed."""
     try:
         return json.loads(content)
     except json.JSONDecodeError:

@@ -78,7 +78,7 @@ def run_inventory(config: Dict[str, Any], target_env: str = "all", fixture_bundl
     host_os = platform_info["host_os"]
     mount_type = platform_info["mount_type"]
 
-    logger.info(f"Entorno detectado: {platform_info['description']}")
+    logger.info(f"Detected runtime environment: {platform_info['description']}")
 
     # 1. Si el anfitrión es macOS (Apple Mac)
     if host_os == HostOSType.MACOS.value and target_env in ["all", "macos", "host"]:

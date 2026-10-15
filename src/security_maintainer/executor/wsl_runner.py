@@ -17,7 +17,7 @@ from ..models import PlanAction, ExecutionResult, ActionStatus, ManagerType
 logger = logging.getLogger(__name__)
 
 ALLOWED_WSL_MANAGERS = {
-    "apt", "apt-get", "dpkg", "apk", "dnf", "yum", "pacman", "zypper", "pip", "pip3", "npm", "flatpak", "snap"
+    "apt", "apt-get", "dpkg", "apk", "dnf", "yum", "pacman", "zypper"
 }
 
 DANGEROUS_SHELL_CHARS_REGEX = re.compile(r"[;&|`$><\n\r]")

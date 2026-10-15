@@ -1,10 +1,11 @@
 """
-Adaptador de inventario y actualizaciones para macOS (Homebrew, Mac App Store, softwareupdate y /Applications).
+Inventory and update adapter for macOS (Homebrew, Mac App Store, softwareupdate, and /Applications).
 """
 
 from __future__ import annotations
 import json
 import logging
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class MacOSInventoryAdapter:
-    """Inspecciona y audita software en sistemas anfitriones Apple macOS."""
+    """Inspects and audits installed software on Apple macOS hosts."""
 
     def __init__(self, config: Dict[str, Any], fixture_data: Optional[Dict[str, Any]] = None):
         self.config = config.get("macos", {})
@@ -37,22 +38,22 @@ class MacOSInventoryAdapter:
         items: List[InventoryItem] = []
         target_name = "macOS Host"
 
-        # 0. Sistema Operativo macOS anfitrión
+        # 0. macOS Host Operating System
         items.append(self._collect_os_info(target_name))
 
-        # 1. Auditoría de Homebrew (Fórmulas CLI y Casks GUI)
+        # 1. Homebrew Audit (CLI formulae and GUI casks)
         brew_items = self._collect_homebrew(target_name)
         items.extend(brew_items)
 
-        # 2. Auditoría de Mac App Store vía 'mas'
+        # 2. Mac App Store Audit via 'mas'
         mas_items = self._collect_mas(target_name)
         items.extend(mas_items)
 
-        # 3. Auditoría de actualizaciones oficiales de macOS (softwareupdate)
+        # 3. Official macOS Updates Audit (softwareupdate)
         apple_updates = self._collect_apple_updates(target_name)
         items.extend(apple_updates)
 
-        # 4. Auditoría de aplicaciones de escritorio en /Applications (Brave, Office, etc.)
+        # 4. Desktop Applications in /Applications
         app_items = self._collect_applications_dir(target_name, items)
         items.extend(app_items)
 
@@ -81,14 +82,14 @@ class MacOSInventoryAdapter:
         return InventoryItem(
             environment=EnvironmentType.MACOS,
             target_name=target_name,
-            name="Sistema Operativo macOS",
+            name="macOS Operating System",
             id="macos-host-os",
             installed_version=full_version,
             manager=ManagerType.APPLE_UPDATE,
             is_supported=True,
             update_mechanism_available=True,
             requires_manual_intervention=False,
-            notes="Sistema anfitrión macOS evaluado.",
+            notes="Evaluated macOS host system.",
             extra_metadata={"caption": caption, "version": version, "build": build}
         )
 
@@ -107,10 +108,10 @@ class MacOSInventoryAdapter:
                 else:
                     return items
             except Exception as e:
-                logger.warning(f"Error consultando Homebrew en macOS: {e}")
+                logger.warning(f"Error querying Homebrew on macOS: {e}")
                 return items
 
-        # Fórmulas CLI
+        # CLI formulae
         for formula in data.get("formulae", []):
             name = formula.get("name", "")
             if name in self.excluded:
@@ -128,11 +129,11 @@ class MacOSInventoryAdapter:
                     manager=ManagerType.HOMEBREW,
                     is_supported=True,
                     update_mechanism_available=True,
-                    notes="Paquete CLI gestionado por Homebrew en macOS"
+                    notes="CLI package managed by Homebrew on macOS"
                 )
             )
 
-        # Casks GUI (ej. Brave, Chrome, Zoom, VSCode)
+        # GUI Casks (e.g., Brave, Chrome, Zoom, VSCode)
         for cask in data.get("casks", []):
             name = cask.get("name", "")
             if name in self.excluded:
@@ -150,7 +151,7 @@ class MacOSInventoryAdapter:
                     manager=ManagerType.HOMEBREW,
                     is_supported=True,
                     update_mechanism_available=True,
-                    notes="Aplicación GUI de macOS gestionada por Homebrew Cask"
+                    notes="macOS GUI application managed by Homebrew Cask"
                 )
             )
 
@@ -171,7 +172,7 @@ class MacOSInventoryAdapter:
                         manager=ManagerType.MAS,
                         is_supported=True,
                         update_mechanism_available=True,
-                        notes="Aplicación de Mac App Store"
+                        notes="Mac App Store application"
                     )
                 )
             return items
@@ -201,7 +202,7 @@ class MacOSInventoryAdapter:
                                 manager=ManagerType.MAS,
                                 is_supported=True,
                                 update_mechanism_available=True,
-                                notes="Aplicación de Mac App Store"
+                                notes="Mac App Store application"
                             )
                         )
         except Exception:
@@ -223,7 +224,7 @@ class MacOSInventoryAdapter:
                         manager=ManagerType.APPLE_UPDATE,
                         is_supported=True,
                         update_mechanism_available=True,
-                        notes="Actualización oficial del sistema operativo macOS"
+                        notes="Official macOS operating system update"
                     )
                 )
             return items
@@ -246,7 +247,7 @@ class MacOSInventoryAdapter:
                                     manager=ManagerType.APPLE_UPDATE,
                                     is_supported=True,
                                     update_mechanism_available=True,
-                                    notes="Actualización oficial del sistema operativo macOS"
+                                    notes="Official macOS operating system update"
                                 )
                             )
             except Exception:
@@ -272,15 +273,13 @@ class MacOSInventoryAdapter:
                         is_supported=False,
                         update_mechanism_available=False,
                         requires_manual_intervention=True,
-                        notes="Aplicación en /Applications sin gestor automatizado detectado.",
+                        notes="Application in /Applications without automated package manager.",
                         extra_metadata={"bundle_id": a.get("bundle_id")}
                     )
                 )
             return items
 
         try:
-            import plistlib
-
             existing_names = {i.name.lower() for i in existing_items}
             existing_ids = {i.id.lower() for i in existing_items}
 
@@ -293,19 +292,19 @@ class MacOSInventoryAdapter:
                     if not plist_path.exists():
                         continue
                     try:
-                        with open(plist_path, "rb") as fp:
-                            plist_data = plistlib.load(fp)
-                        app_name = (
-                            plist_data.get("CFBundleDisplayName")
-                            or plist_data.get("CFBundleName")
-                            or app_path.stem
-                        )
-                        bundle_id = plist_data.get("CFBundleIdentifier", app_path.stem)
-                        version = (
-                            plist_data.get("CFBundleShortVersionString")
-                            or plist_data.get("CFBundleVersion")
-                            or "unknown"
-                        )
+                        # Extract application metadata using plain text regex to avoid plist serialization hooks
+                        content = plist_path.read_text(encoding="utf-8", errors="ignore")
+                        name_match = re.search(r"<key>CFBundleDisplayName</key>\s*<string>([^<]+)</string>", content) or \
+                                     re.search(r"<key>CFBundleName</key>\s*<string>([^<]+)</string>", content)
+                        app_name = name_match.group(1).strip() if name_match else app_path.stem
+                        
+                        id_match = re.search(r"<key>CFBundleIdentifier</key>\s*<string>([^<]+)</string>", content)
+                        bundle_id = id_match.group(1).strip() if id_match else app_path.stem
+
+                        ver_match = re.search(r"<key>CFBundleShortVersionString</key>\s*<string>([^<]+)</string>", content) or \
+                                    re.search(r"<key>CFBundleVersion</key>\s*<string>([^<]+)</string>", content)
+                        version = ver_match.group(1).strip() if ver_match else "unknown"
+
                         if app_name in self.excluded or bundle_id in self.excluded:
                             continue
                         if app_name.lower() in existing_names or bundle_id.lower() in existing_ids:
@@ -322,13 +321,13 @@ class MacOSInventoryAdapter:
                                 is_supported=False,
                                 update_mechanism_available=False,
                                 requires_manual_intervention=True,
-                                notes="Aplicación en /Applications con actualizador autónomo o manual.",
+                                notes="Standalone application in /Applications with manual or internal updater.",
                                 extra_metadata={"bundle_id": bundle_id, "bundle_path": str(app_path)}
                             )
                         )
                     except Exception:
                         pass
         except Exception as e:
-            logger.debug(f"Error analizando /Applications en macOS: {e}")
+            logger.debug(f"Error inspecting /Applications on macOS: {e}")
 
         return items

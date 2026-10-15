@@ -1,7 +1,7 @@
 {
   "name": "security-maintainer",
-  "version": "1.2.3",
-  "description": "Universal OpenClaw skill for auditing and remediating software across Windows, macOS, and Linux/WSL, with CVE intelligence correlation and AI agent defense (prompt injection detection, unauthenticated LLM discovery, MCP security, and API key protection).",
+  "version": "1.2.4",
+  "description": "Deterministic OpenClaw security skill responding strictly to 'security-maintainer:' command triggers to audit and remediate host software across Windows, macOS, and Linux/WSL environments using SHA-256 cryptographic approval.",
   "main": "SKILL.md",
   "license": "Apache-2.0",
   "author": {
@@ -50,6 +50,14 @@
       "windows-host",
       "macos",
       "linux"
+    ],
+    "triggers": [
+      "security-maintainer: audit system software and vulnerabilities",
+      "security-maintainer: search for pending security updates",
+      "security-maintainer: audit ai agent security and local llm services",
+      "security-maintainer: generate security remediation plan",
+      "security-maintainer: apply approved security plan",
+      "security-maintainer: verify status of security patches"
     ]
   }
 }

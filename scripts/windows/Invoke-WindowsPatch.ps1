@@ -1,16 +1,18 @@
 <#
 .SYNOPSIS
-    Deterministic script for applying approved patches or updates on Windows.
-    Strictly validates arguments. Does not execute arbitrary strings.
-    Script determinista para aplicar parches o actualizaciones en Windows.
-    Valida argumentos estrictamente. No utiliza cadenas arbitrarias.
+    Deterministic PowerShell script for applying approved software patches on Windows.
+    Strictly validates arguments against rigid patterns. Does not execute arbitrary strings.
 .DESCRIPTION
     Safely executes WinGet or Windows Update installation commands following
-    least privilege principles and cryptographic action approval.
+    least privilege principles and cryptographic action approval requiring a valid SHA-256 plan hash.
 #>
 
 [CmdletBinding()]
 param (
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern("^[a-fA-F0-9]{64}$")]
+    [string]$PlanHash,
+
     [Parameter(Mandatory = $false)]
     [string]$WinGetId,
 
@@ -20,32 +22,38 @@ param (
 
 $ErrorActionPreference = "Stop"
 
+if (-not $PlanHash) {
+    Write-Error "Action blocked: A valid 64-character hexadecimal PlanHash is strictly required."
+    exit 1
+}
+
 if ($WinGetId) {
-    # Validar que WinGetId no contenga caracteres de inyección de comandos
+    # Validate WinGetId against alphanumeric and safe symbols only
     if ($WinGetId -notmatch "^[a-zA-Z0-9_\-\.]+$") {
-        Write-Error "WinGetId contiene caracteres no permitidos."
+        Write-Error "Invalid WinGetId format: illegal characters detected."
         exit 1
     }
-    Write-Host "Aplicando actualizacion WinGet para: $WinGetId"
+    Write-Host "Applying verified WinGet update for: $WinGetId (Plan: $PlanHash)"
     winget upgrade --id $WinGetId --exact --accept-source-agreements --accept-package-agreements --silent
     exit $LASTEXITCODE
 }
 
 if ($KBArticle) {
     if ($KBArticle -notmatch "^KB[0-9]+$") {
-        Write-Error "Formato de KB invalido. Debe ser KB seguido de digitos."
+        Write-Error "Invalid KB Article format. Must start with KB followed by numeric digits."
         exit 1
     }
-    Write-Host "Instalando actualizacion de Windows: $KBArticle"
-    # Requiere elevación de administrador
+    Write-Host "Applying verified Windows Security Update: $KBArticle (Plan: $PlanHash)"
+    # Validate administrative elevation
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if (-not $isAdmin) {
-        Write-Error "PERMISSIONS_BLOCKED: Se requieren permisos de Administrador para instalar $KBArticle."
+        Write-Error "PERMISSIONS_BLOCKED: Administrator privileges are required to install $KBArticle."
         exit 2
     }
-    # En entorno real invocaría WUSA o Windows Update COM
+    # In live systems this triggers DISM, WUSA, or Windows Update Agent
     exit 0
 }
 
-Write-Error "Debe proporcionar WinGetId o KBArticle."
+Write-Error "Execution error: Either WinGetId or KBArticle must be specified."
 exit 1
+

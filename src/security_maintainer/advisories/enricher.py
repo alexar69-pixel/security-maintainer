@@ -1,6 +1,7 @@
 """
-Enriquecedor unificado de inteligencia de amenazas (Threat Intelligence Enricher).
-Combina y correlaciona OSV, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC y Ubuntu Security.
+Unified Threat Intelligence Enricher.
+Combines and correlates OSV, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC, and Ubuntu Security trackers.
+Emits clear user-facing security notices before initiating external CVE lookups.
 """
 
 from __future__ import annotations
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class ThreatIntelligenceEnricher:
-    """Enriquece vulnerabilidades y componentes combinando múltiples fuentes globales de seguridad."""
+    """Enriches vulnerabilities and inventory items using multi-source security feeds."""
 
     def __init__(
         self,
@@ -42,11 +43,17 @@ class ThreatIntelligenceEnricher:
         self.ubuntu_client = ubuntu_client
 
     def enrich_vulnerabilities(self, vulns: List[Vulnerability], item: Optional[InventoryItem] = None) -> List[Vulnerability]:
-        """Enriquece una lista de vulnerabilidades asociadas a un componente."""
+        """Correlates vulnerabilities against external threat intelligence sources with user notice."""
         if not vulns:
             return []
 
         cve_ids = [v.cve_id for v in vulns if v.cve_id.upper().startswith("CVE-")]
+
+        # Log explicit user-facing notice regarding external intelligence lookup
+        logger.info(
+            "[SECURITY NOTICE] Performing external CVE threat intelligence enrichment for %d identifiers (EPSS, NVD, KEV)...",
+            len(cve_ids)
+        )
 
         # 1. Batch EPSS
         epss_map = self.epss_client.get_scores(cve_ids) if cve_ids else {}

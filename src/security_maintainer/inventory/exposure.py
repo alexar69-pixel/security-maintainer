@@ -1,6 +1,6 @@
 """
-Módulo de auditoría de superficie de exposición y mapeo de procesos/puertos a la escucha.
-Cruza puertos abiertos con los paquetes de software instalados.
+Exposure surface auditor and network process/port mapping module.
+Correlates active listening sockets with installed software packages.
 """
 
 from __future__ import annotations
@@ -14,13 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 class ExposureAuditor:
-    """Detecta puertos y servicios activos en la red y los vincula con paquetes instalados."""
+    """Detects active network listening ports and correlates them with installed packages."""
 
     def __init__(self, fixture_data: Optional[Dict[str, Any]] = None):
         self.fixture_data = fixture_data
 
     def audit_wsl_ports(self, distro_name: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Audita sockets a la escucha (TCP/UDP) en Linux/WSL mediante 'ss -tulpn'."""
+        """Audits listening sockets (TCP/UDP) in Linux/WSL via 'ss -tulpn'."""
         if self.fixture_data and "wsl_ports" in self.fixture_data:
             return self.fixture_data["wsl_ports"]
 
