@@ -14,11 +14,12 @@ from ..models import (
     ExecutionResult,
     CoverageSummary,
     ActionStatus,
+    AISecurityFinding,
 )
 
 
 class MarkdownReporter:
-    """Genera informes legibles en formato Markdown en español."""
+    """Genera informes legibles en formato Markdown."""
 
     def __init__(self, output_dir: Optional[Path] = None):
         self.output_dir = output_dir or (Path.home() / ".security-maintainer" / "reports")
@@ -32,7 +33,8 @@ class MarkdownReporter:
         inventory: List[InventoryItem],
         vulnerabilities: Dict[str, List[Vulnerability]],
         plan: Optional[ActionPlan] = None,
-        execution_results: Optional[List[ExecutionResult]] = None
+        execution_results: Optional[List[ExecutionResult]] = None,
+        ai_findings: Optional[List[AISecurityFinding]] = None,
     ) -> str:
         lines: List[str] = []
         now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
@@ -136,10 +138,22 @@ class MarkdownReporter:
                 )
             lines.append("")
 
+        # 5. Hallazgos de Seguridad en IA y Agentes (si existen)
+        if ai_findings:
+            lines.append(f"## 5. Auditoría de Seguridad de IA y Agentes ({len(ai_findings)})")
+            lines.append("| Severidad | Componente / Objetivo | Tipo de Riesgo | Hallazgo y Recomendación |")
+            lines.append("| :--- | :--- | :--- | :--- |")
+            for f in ai_findings:
+                lines.append(
+                    f"| **{f.severity.value}** | `{f.target_component}` | {f.threat_type.value} | "
+                    f"**{f.title}**: {f.description} *Remediación:* {f.remediation_recommendation} |"
+                )
+            lines.append("")
+
         # 6. Software que Requiere Intervención Manual o Sin Soporte
         manual_items = [item for item in inventory if item.requires_manual_intervention or not item.is_supported]
         if manual_items:
-            lines.append("## 5. Software no Gestionable Automáticamente")
+            lines.append("## 6. Software no Gestionable Automáticamente")
             lines.append("| Entorno | Componente | Motivo / Limitación |")
             lines.append("| :--- | :--- | :--- |")
             for m in manual_items:

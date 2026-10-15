@@ -7,205 +7,176 @@ fingerprints:
 - hash: sha256:d2342622fc1119aa1f5c5b5d30386580c342dab92913fa96ccd9903c2b6e55d8
   rule_id: AST4
   file: src/security_maintainer/advisories/cisa_kev.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:3b120bffde1b57a74a8c5ca700249053b9c19b1a414244ae11462d863546cf23
   rule_id: AST4
   file: src/security_maintainer/executor/runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:9da46b809100af797070ad3e59f2c1ab92748c17db4ed107fcf29b3cfd8b3ed7
   rule_id: AST4
   file: src/security_maintainer/executor/windows_runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:923a057ac101d2f3a95bf935f199d4b9650d423a9752388020c433c64f58376c
   rule_id: AST4
   file: src/security_maintainer/executor/wsl_runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:19eab84f83d4d797e0a3bb19e3b40700cf109be908a0d3a1dc30a87e76088e10
   rule_id: AST4
   file: src/security_maintainer/executor/wsl_runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:ed69ed06c2ea846e68ad3fb36de1f61407d39c53f66de8eef4592904ab61982d
   rule_id: AST4
   file: src/security_maintainer/inventory/exposure.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:86a5f9b411485c9c362beaebc326e843a056eced4f58cccd48f948b7bd1c1ba5
   rule_id: AST4
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:17a91587587ddaf39716bf1949c555c251ae4689365d0997e5bdd7f4ddee2f1b
   rule_id: AST4
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:8889d9cadc9a5cb343b3ee92360684da31079b75348d9083caa60d2faf0de522
   rule_id: AST4
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:b4d942f9f4647a98ae665bd0a74816c05d22d6a99e0a8abb1fb6daf1b2814f37
   rule_id: AST4
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:0b9b165b9b15b96f58e4b33549abc3cd4f5ef79b8d4ad2cdbb9b2f31e5ac5995
   rule_id: AST4
   file: src/security_maintainer/inventory/package_managers.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:b4cc6cdcf82487980b3d1c284cd6895bc59727b2b75c3c9d5538f1d05f445a7a
   rule_id: AST4
   file: src/security_maintainer/inventory/windows.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:e12ed752bdd90e6895570b4c23d149ae5f4ca7b6dc849e8206866d7db38a0edd
   rule_id: AST4
   file: src/security_maintainer/inventory/wsl.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:13fffeb331058fe7e32742b940506feba0bf37d657659bf3784d83061cf60713
   rule_id: AST4
   file: src/security_maintainer/inventory/wsl.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:560d6bff8c8045d4fef86a837ffadbc4852413e41198a880787cfa9cf317dda4
   rule_id: AST4
   file: src/security_maintainer/inventory/wsl.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:e2fecbc0dd8a6290368382c98fd5536beccebda094b05fbeaf9796927bdd4947
   rule_id: AST4
   file: src/security_maintainer/inventory/wsl.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:335900adfefcea53731e0d16ccf7ecd9e775c8bf05dff97c6a6e3205e8193da3
   rule_id: AST4
   file: src/security_maintainer/verifier/verifier.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:203f7e08682b08bccabaa7feab6a5e42e860289ff36d38f33ca0074975ddd330
   rule_id: AST4
   file: src/security_maintainer/verifier/verifier.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:fcd3a6205fb2e39a2fb42f528bbb689c0fec8d9405e4857a87bcfa6ae4857189
   rule_id: AST4
   file: src/security_maintainer/verifier/verifier.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:d73af0da55ed6f604c6dea7dd4798098270a120929bf906bffe286028040897b
   rule_id: E1
   file: src/security_maintainer/advisories/epss.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:8a765ca5fc521c0ff69b94757756e32ee735d2d4e095909b9082fd91f2e69f0b
   rule_id: E1
   file: src/security_maintainer/advisories/msrc.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:520e405602b52e2f9f732e1b0a7c0c49548bcdd4327832bdc5176764f6f4a40f
   rule_id: E1
   file: src/security_maintainer/advisories/osv_client.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:2a1542284622944c40b3e40ce273e4c16089bb953279b54af349abf9d1590982
   rule_id: EA1
   file: data/cisa_kev_bundle.json
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:6fcdc058b0f776684f567a6e8176467dc3eff2626ff549f206e99776edbf534a
   rule_id: EA4
   file: src/security_maintainer/executor/runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:eb12ad8131c9269604294e3def73545ea97f92902de3d5ccb1e3df0962b41ff0
   rule_id: PE2
   file: ARQUITECTURA.md
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:4fea52f8efabc8e4009915771115b88fc6d77e2efdf03160bda7c6ff57b174c0
   rule_id: PE2
   file: README.md
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:75e42c4edba99e2e00a586015fde793002f807d0314f662ca5ad8819318f7ce8
   rule_id: PE2
   file: src/security_maintainer/executor/wsl_runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:6bcb7a2a8b4c3e4688faa2f0ba5cf776dd02b1d33e42ff594344e370c57faefa
   rule_id: PE2
   file: src/security_maintainer/executor/wsl_runner.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
+- hash: sha256:717186f5772dd2084c3c8859ccb45fe722e457c65c299569ec98081d7e680fd3
+  rule_id: P1
+  file: tests/test_ai_defense.py
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
+- hash: sha256:d52ff06aab0dc46fdd86767821c4cc05a36e9b772455b42222136505c5340cc9
+  rule_id: P1
+  file: tests/test_ai_defense.py
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:e6c0980b531056b157c9447a15d99b9250d961801abca26cbdefcac99297e8a2
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:eef6e7effab04c0d82d1f2b34e7217a6148401f4510587e7dbc2de51ca0b66b9
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:7d7698f062aa3314631e270d10671b2e619ef30219da7060a6c7d8355a4e2a20
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:42d303e548ce0d139ee49697d722f3dc959c2f3567cf4290f2b254a6daf4dd2c
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:9d62d1401f06a80430ea762b104dd304c0e05839adb81847cc3a5c1ece041404
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:522df060666c947efb295d81419f14b7bb51b3eea11997bb2b23fc70ba3edca1
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:a7f6073c71bd167c8dc4ef14c206dd9354b8c827ccea03bb99bfe8ea6c510798
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:a2608862ae9d13394fd95253f48f5f0967076f373554c57b9732a482ed199691
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:a65c76a3a779131175dc9a8020504ee128445179dbbfbcba6c3a07af17377ac0
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:a5b1aa76555ccb6291fae1f7e7bf71885acc4fc44640a55d14fa957e70d4b0f7
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:476c778661e0c9f194e7fc53c5bc7c2604dc119a97ac746852e765895a807d14
   rule_id: SC4
   file: pyproject.toml
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:96c60ad0fb05f09487d92e5d32d54867e51810bb3a11680d5f416ded4f7a1208
   rule_id: SC4
   file: pyproject.toml
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
 - hash: sha256:e183fca72f82d418e70f1dd9f18e0d8e75fc361b8c2a97b2653b995aa9939228
   rule_id: SC4
   file: pyproject.toml
-  reason: Legitimate deterministic maintenance skill operations (least privilege subprocess
-    execution, bilingual reporting and explicit safety notices)
+  reason: Legitimate deterministic maintenance and AI defense auditor operations
+- hash: sha256:f921b1d7533e92a3063aee5387999c9bedac0c05f9286c1223a55b5e4980c037
+  rule_id: YR4
+  file: tests/test_ai_defense.py
+  reason: Legitimate deterministic maintenance and AI defense auditor operations

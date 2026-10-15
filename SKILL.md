@@ -1,9 +1,9 @@
 ---
 name: security-maintainer
-description: "Universal security maintenance skill for Windows, macOS, and Linux/WSL. Audits installed host and environment software, correlates with vulnerability intelligence feeds (OSV, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC, Ubuntu Security), detects listening network processes exposure, and executes cryptographic-hash approved updates with post-remediation verification."
+description: "Universal security maintenance skill for Windows, macOS, and Linux/WSL. Audits host and environment software, correlates with vulnerability feeds (OSV, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC), audits AI & Agent security (OWASP LLM Top 10, prompt injections, unauthenticated local LLM services, MCP tool poisoning, API key exposure), and executes cryptographic-hash approved updates with post-remediation verification."
 user-invocable: true
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   license: "Apache-2.0"
   author: "OpenClaw Community"
   category: "security-and-maintenance"
@@ -15,6 +15,11 @@ metadata:
   tags:
     - "security"
     - "vulnerability-management"
+    - "ai-security"
+    - "llm-defense"
+    - "owasp-llm"
+    - "prompt-injection"
+    - "mcp-security"
     - "cve"
     - "cisa-kev"
     - "vulncheck-kev"
@@ -40,6 +45,7 @@ permissions:
       - "vulnerability-feeds"
       - "local-project-manifests"
       - "network-listening-ports"
+      - "ai-agent-configs"
     execution:
       - "authorized-package-managers"
     blocked:
@@ -49,10 +55,12 @@ permissions:
 triggers:
   - "security-maintainer: audita el software del sistema y vulnerabilidades"
   - "security-maintainer: busca actualizaciones de seguridad pendientes"
+  - "security-maintainer: audita la seguridad de agentes de IA y servidores locales"
   - "security-maintainer: genera un plan de remediación para vulnerabilidades"
   - "security-maintainer: aplica el plan de seguridad aprobado"
   - "security-maintainer: verifica el estado de las correcciones de seguridad"
   - "security-maintainer: audit system software and vulnerabilities"
+  - "security-maintainer: audit ai agent security and local llm services"
   - "security-maintainer: generate security remediation plan"
   - "security-maintainer: apply approved security plan"
 ---

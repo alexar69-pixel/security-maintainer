@@ -44,6 +44,38 @@ class FindingCategory(str, Enum):
     UNPATCHED_VULNERABILITY = "unpatched_vulnerability"
     UNSUPPORTED_EOL = "unsupported_eol"
     FUNCTIONAL_BUG = "functional_bug"
+    AI_SECURITY_RISK = "ai_security_risk"
+
+
+class AIThreatType(str, Enum):
+    PROMPT_INJECTION = "prompt_injection"
+    MCP_TOOL_POISONING = "mcp_tool_poisoning"
+    CREDENTIAL_EXPOSURE = "credential_exposure"
+    UNAUTHENTICATED_LLM_SERVICE = "unauthenticated_llm_service"
+    EXCESSIVE_AGENCY = "excessive_agency"
+    ROGUE_PERSISTENCE = "rogue_persistence"
+
+
+@dataclass
+class AISecurityFinding:
+    threat_type: AIThreatType
+    title: str
+    severity: SeverityLevel
+    target_component: str
+    description: str
+    evidence: str
+    remediation_recommendation: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "threat_type": self.threat_type.value,
+            "title": self.title,
+            "severity": self.severity.value,
+            "target_component": self.target_component,
+            "description": self.description,
+            "evidence": self.evidence,
+            "remediation_recommendation": self.remediation_recommendation
+        }
 
 
 class ConfidenceLevel(str, Enum):

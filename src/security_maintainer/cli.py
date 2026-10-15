@@ -41,6 +41,7 @@ from .executor.runner import PlanExecutor
 from .verifier.verifier import RemediationVerifier
 from .reporter.json_reporter import JSONReporter
 from .reporter.markdown_reporter import MarkdownReporter
+from .advisories.ai_defense import AIAgentSecurityAuditor
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger("security_maintainer")
@@ -154,8 +155,13 @@ def cmd_audit(args, config: Dict[str, Any], fixture_bundle: Optional[Dict[str, A
         "Ubuntu Security": not ubuntu_sec.last_query_failed,
     }
 
+    ai_findings = []
+    if getattr(args, "ai_defense", False) or getattr(args, "all", False):
+        ai_auditor = AIAgentSecurityAuditor(config)
+        ai_findings = ai_auditor.audit_all()
+
     coverage = calculate_coverage(items, sources_status)
-    md_output = md_rep.generate_report(args.environment, "audit", coverage, items, vuln_map)
+    md_output = md_rep.generate_report(args.environment, "audit", coverage, items, vuln_map, ai_findings=ai_findings)
     json_rep.generate_report(args.environment, "audit", coverage, items, vuln_map)
 
     print(md_output)
@@ -347,6 +353,7 @@ def main(argv=None):
     p_audit = subparsers.add_parser("audit", help="Audita software y vulnerabilidades sin realizar cambios.")
     p_audit.add_argument("--environment", choices=["all", "windows", "wsl", "macos", "linux", "host"], default="all")
     p_audit.add_argument("--all", action="store_true")
+    p_audit.add_argument("--ai-defense", action="store_true", help="Audita la seguridad de agentes de IA, servidores locales y configuraciones MCP.")
 
     # Plan
     p_plan = subparsers.add_parser("plan", help="Genera un plan con huella SHA-256 en modo 'ask'.")
