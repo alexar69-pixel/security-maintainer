@@ -1,0 +1,51 @@
+{
+  "name": "security-maintainer",
+  "version": "1.1.0",
+  "description": "Skill universal de OpenClaw para mantener actualizado el software de Windows, macOS y distribuciones WSL/Linux, detectar vulnerabilidades (CVE, CISA KEV, VulnCheck, EPSS, NVD, OSV, MSRC, Ubuntu USN) y aplicar remediaciones autorizadas bajo control estricto.",
+  "main": "SKILL.md",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "OpenClaw Community",
+    "email": "community@openclaw.dev",
+    "url": "https://openclaw.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexar69-pixel/security-maintainer.git"
+  },
+  "homepage": "https://github.com/alexar69-pixel/security-maintainer#readme",
+  "keywords": [
+    "security",
+    "openclaw-skill",
+    "vulnerability-scanner",
+    "cve",
+    "cisa-kev",
+    "vulncheck-kev",
+    "epss",
+    "nvd",
+    "msrc",
+    "ubuntu-usn",
+    "osv",
+    "windows",
+    "wsl",
+    "macos",
+    "homebrew",
+    "linux",
+    "winget",
+    "apt",
+    "patch-management"
+  ],
+  "engines": {
+    "openclaw": ">=2026.10.0"
+  },
+  "openclaw": {
+    "skill": "SKILL.md",
+    "defaultMode": "ask",
+    "environments": [
+      "wsl",
+      "windows-host",
+      "macos",
+      "linux"
+    ]
+  }
+}
