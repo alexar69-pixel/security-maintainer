@@ -78,7 +78,7 @@
     },
     "projects": {
       "type": "object",
-      "description": "Optional paths to inspect local project package manifests (package.json, requirements.txt) for known security vulnerabilities.",
+      "description": "Optional paths to audit, remediate, and verify local project package manifests (package.json, requirements.txt) and their test suites.",
       "properties": {
         "registered_paths": {
           "type": "array",

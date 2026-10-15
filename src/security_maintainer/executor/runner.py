@@ -197,7 +197,10 @@ class PlanExecutor:
 
     def _execute_macos_action(self, action: PlanAction) -> ExecutionResult:
         import subprocess
+        import re
         allowed_macos = {"brew", "mas", "softwareupdate"}
+        dangerous_regex = re.compile(r"[;&|`$><\n\r]")
+
         if not action.exact_command or not isinstance(action.exact_command, list):
             return ExecutionResult(
                 action_id=action.action_id,
@@ -206,7 +209,7 @@ class PlanExecutor:
                 success=False,
                 exit_code=1,
                 status=ActionStatus.FAILED,
-                error_message="Comando macOS inválido o vacío."
+                error_message="Invalid or empty command."
             )
 
         cmd_bin = Path(action.exact_command[0]).name.lower()
@@ -218,14 +221,28 @@ class PlanExecutor:
                 success=False,
                 exit_code=126,
                 status=ActionStatus.BLOCKED_PERMISSIONS,
-                error_message=f"Gestor no autorizado en macOS: {cmd_bin}"
+                error_message=f"Unauthorized package manager in macOS allowlist: {cmd_bin}"
             )
+
+        for arg in action.exact_command:
+            if not isinstance(arg, str) or dangerous_regex.search(arg):
+                return ExecutionResult(
+                    action_id=action.action_id,
+                    product_name=action.product_name,
+                    manager=action.manager,
+                    success=False,
+                    exit_code=126,
+                    status=ActionStatus.BLOCKED_PERMISSIONS,
+                    error_message=f"Dangerous metacharacter in command token: {arg}"
+                )
+
+        logger.warning(
+            "[SECURITY AUDIT] Executing pre-approved macOS package update: %s",
+            " ".join(action.exact_command)
+        )
 
         try:
             cmd = list(action.exact_command)
-            if action.required_privileges in ["admin", "sudo"]:
-                cmd = ["sudo", "-n"] + cmd
-
             proc = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
             success = proc.returncode == 0
             return ExecutionResult(

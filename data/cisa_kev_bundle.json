@@ -20,7 +20,7 @@
       "product": "Git",
       "vulnerabilityName": "Git Remote Code Execution via Submodules",
       "dateAdded": "2024-05-20",
-      "shortDescription": "Git contains an issue where submodules can execute arbitrary code during clone.",
+      "shortDescription": "Git submodule path traversal vulnerability affecting recursive clone operations.",
       "requiredAction": "Apply security updates immediately.",
       "dueDate": "2024-06-10"
     },

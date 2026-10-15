@@ -1,6 +1,6 @@
 """
-Cliente para la API 2.0 del National Vulnerability Database (NVD - NIST).
-Recupera métricas oficiales CVSS v3.1/v4.0, vectores de ataque y descripciones formales.
+NIST National Vulnerability Database (NVD) API 2.0 Client.
+Retrieves official CVSS v3.1/v4.0 scores, attack vectors, and vulnerability descriptions.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ DEFAULT_NVD_URL = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 
 
 class NvdClient:
-    """Consulta la API de NIST NVD para enriquecer CVEs con métricas CVSS detalladas."""
+    """Queries NIST NVD API to enrich CVEs with detailed CVSS metrics."""
 
     def __init__(self, config: Dict[str, Any], cache: AdvisoryCache, fixture_data: Optional[Dict[str, Any]] = None):
         self.config = config.get("advisories", {}).get("nvd", {})

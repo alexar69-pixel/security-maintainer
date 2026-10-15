@@ -1,45 +1,48 @@
-# Arquitectura Técnica de `security-maintainer`
- 
+# Technical Architecture of `security-maintainer`
+
 > [!WARNING]
-> **Aviso de Seguridad y Alcance del Sistema:**
-> `security-maintainer` opera sobre componentes de sistema operativo (Windows, macOS, distribuciones Linux/WSL) y dependencias de proyectos. Las operaciones de actualización modifican binarios o librerías del sistema. Para preservar la integridad del entorno, el modo predeterminado es estrictamente `ask` (requiere plan numerado, hash SHA-256 inmutable y confirmación explícita del usuario). Nunca aplique el modo automático (`auto`) sin haber auditado previamente el impacto en los servicios instalados.
+> **Safety Notice and Operating Scope:**
+> `security-maintainer` manages operating system components (Windows host, macOS, and Linux/WSL environments) and registered project dependencies. Package update actions modify host binaries and shared libraries. To guarantee system stability, the default mode is strictly `ask` (requiring a numbered plan, immutable SHA-256 fingerprint, and explicit user confirmation). Never enable automated mode without prior audit of installed services.
+> 
+> *Language note:* This architecture specification is maintained in English as the primary universal standard. Multilingual and Spanish prompts are supported via OpenClaw natural language mapping.
 
-`security-maintainer` está diseñado bajo un modelo desacoplado y determinista para operar en entornos híbridos donde el agente OpenClaw se ejecuta dentro de WSL o nativamente en el anfitrión (Windows, macOS, Linux).
+`security-maintainer` is engineered under a decoupled, deterministic architecture designed to operate across hybrid environments where the OpenClaw agent runs inside WSL or directly on the host (Windows, macOS, or Linux).
 
-## 1. Diagrama de Arquitectura de Alto Nivel
+## 1. High-Level Architecture Diagram
 
 ```mermaid
 flowchart TD
-    subgraph OpenClaw ["Entorno OpenClaw (WSL)"]
+    subgraph OpenClaw ["OpenClaw Agent Environment"]
         SKILL["SKILL.md (OpenClaw Skill Interface)"]
         CLI["CLI Entrypoint (cli.py)"]
         CONFIG["ConfigManager (config.py & schema.json)"]
     end
 
-    subgraph Core ["Motor Core de Mantenimiento"]
-        INV_COORD["Coordinador de Inventario"]
-        ADVISORY["Motor de Advisories (OSV, KEV, Backports)"]
-        CACHE["AdvisoryCache (Disco local)"]
+    subgraph Core ["Maintenance Core Engine"]
+        INV_COORD["Inventory Coordinator"]
+        ADVISORY["Advisory & Threat Intelligence Engine"]
+        CACHE["AdvisoryCache (Local disk)"]
         PLANNER["PlannerEngine (engine.py)"]
         POLICY["PolicyEngine (policy.py)"]
         APPROVAL["ApprovalManager (approval.py)"]
         RUNNER["PlanExecutor (runner.py)"]
         LOCK["ConcurrencyLock (maintainer.lock)"]
         VERIFIER["RemediationVerifier (verifier.py)"]
-        REPORTER["Reporters (JSON y Markdown)"]
+        REPORTER["Reporters (JSON & Markdown)"]
     end
 
-    subgraph Adapters ["Adaptadores por Entorno"]
-        WIN_ADAPT["Windows Adapter (Get-WindowsInventory.ps1)"]
-        WSL_ADAPT["WSL Adapter (inspect_wsl.sh)"]
-        PROJ_ADAPT["Projects Adapter (Node/Python)"]
-        PKG_ADAPT["Package Managers (pipx, npm)"]
+    subgraph Adapters ["Platform Adapters"]
+        WIN_ADAPT["Windows Adapter (WinGet, Registry, Windows Update)"]
+        WSL_ADAPT["WSL Adapter (distros, apt, dpkg)"]
+        MACOS_ADAPT["macOS Adapter (Homebrew, MAS)"]
+        PROJ_ADAPT["Projects Adapter (Node.js/Python manifests)"]
     end
 
-    subgraph TargetSystems ["Sistemas Gestionados"]
-        WIN_HOST["Windows Host (WinGet, Registry, Windows Update)"]
-        WSL_DISTROS["WSL Distros (Ubuntu, Debian, etc.)"]
-        CODE_PROJECTS["Repositorios de Código Registrados"]
+    subgraph TargetSystems ["Managed Environments"]
+        WIN_HOST["Windows Host OS"]
+        WSL_DISTROS["WSL Distributions"]
+        MACOS_HOST["macOS Host"]
+        CODE_PROJECTS["Registered Code Repositories"]
     end
 
     SKILL --> CLI
@@ -51,11 +54,12 @@ flowchart TD
 
     INV_COORD --> WIN_ADAPT
     INV_COORD --> WSL_ADAPT
+    INV_COORD --> MACOS_ADAPT
     INV_COORD --> PROJ_ADAPT
-    INV_COORD --> PKG_ADAPT
 
     WIN_ADAPT --> WIN_HOST
     WSL_ADAPT --> WSL_DISTROS
+    MACOS_ADAPT --> MACOS_HOST
     PROJ_ADAPT --> CODE_PROJECTS
 
     ADVISORY --> CACHE
@@ -67,54 +71,54 @@ flowchart TD
 
 ---
 
-## 2. Flujo de Estados y Ciclo de Vida del Plan
+## 2. State Machine and Plan Lifecycle
 
 > [!IMPORTANT]
-> **Advertencia sobre Modos de Ejecución:**
-> Los cambios sobre paquetes y librerías del sistema conllevan riesgos de incompatibilidad o reinicio de servicios. Se debe auditar siempre el plan antes de considerar cualquier modo no supervisado.
+> **Warning Regarding Execution Modes:**
+> Modifications to system libraries and binaries carry compatibility risks. Always audit the generated plan before considering any automated execution.
 
-El motor opera bajo tres modos estrictos: `audit`, `ask` (predeterminado) y `auto`.
+The engine operates under three strict modes: `audit`, `ask` (default), and `auto`.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Inventario: Ejecución de Audit / Plan
-    Inventario --> CruceVulnerabilidades: Recopilación de items
-    CruceVulnerabilidades --> EvaluacionPoliticas: Enriquecimiento con CVE y KEV
-    EvaluacionPoliticas --> GeneracionPlan: Filtrado de exclusiones y pins
-    GeneracionPlan --> HashCanonica: Cálculo SHA-256 de acciones
-    HashCanonica --> EsperaAprobacion: Modo 'ask' (Default)
-    HashCanonica --> EjecucionInmediata: Modo 'auto' (Autorizado)
+    [*] --> Inventory: Audit / Plan Execution
+    Inventory --> VulnerabilityCorrelation: Collect components
+    VulnerabilityCorrelation --> PolicyEvaluation: Correlate CVE, KEV, EPSS
+    PolicyEvaluation --> PlanGeneration: Apply pin and exclusion rules
+    PlanGeneration --> CanonicalHash: Compute SHA-256 action digest
+    CanonicalHash --> AwaitingApproval: 'ask' Mode (Default)
+    CanonicalHash --> ImmediateExecution: 'auto' Mode (Pre-authorized)
 
-    EsperaAprobacion --> VerificacionToken: Usuario aprueba con Hash
-    EsperaAprobacion --> CanceladoExpirado: Transcurren > 30 minutos
+    AwaitingApproval --> TokenVerification: User approves with Plan Hash
+    AwaitingApproval --> CancelledExpired: 30 minutes elapsed
 
-    VerificacionToken --> AdquisicionBloqueo: Huella íntegra
-    VerificacionToken --> Rechazado: Huella no coincide o plan alterado
+    TokenVerification --> LockAcquisition: Valid Hash & non-expired
+    TokenVerification --> Rejected: Hash mismatch or modified plan
 
-    AdquisicionBloqueo --> EjecucionSecuencial: ConcurrencyLock adquirido
-    EjecucionSecuencial --> VerificacionVersion: Ejecución del gestor (código 0)
-    VerificacionVersion --> FinVerificado: Versión efectiva confirmada
-    VerificacionVersion --> FinDiscrepancia: Versión no coincide (Unverified)
-    FinVerificado --> GeneracionInforme: Emisión JSON y Markdown
-    FinDiscrepancia --> GeneracionInforme
-    Rechazado --> [*]
-    GeneracionInforme --> [*]
+    LockAcquisition --> SequentialExecution: ConcurrencyLock acquired
+    SequentialExecution --> VersionVerification: Manager execution (Exit code 0)
+    VersionVerification --> VerifiedEnd: Effective version verified
+    VersionVerification --> DiscrepancyEnd: Target version discrepancy
+    VerifiedEnd --> ReportGeneration: Output Markdown & JSON
+    DiscrepancyEnd --> ReportGeneration
+    Rejected --> [*]
+    ReportGeneration --> [*]
 ```
 
 ---
 
-## 3. Principios de Seguridad y Contención
+## 3. Security Principles and Blast-Radius Containment
 
-1. **Aislamiento de Comandos:**
-   - No se utiliza `shell=True` en llamadas de subprocess de Python.
-   - Los nombres de paquetes e identificadores se validan contra expresiones regulares restrictivas (`^[a-zA-Z0-9_\-\.]+$`) antes de ser transmitidos a ejecutables.
-2. **Tratamiento de Datos Externos:**
-   - La información obtenida de OSV.dev, GitHub Advisories o catálogos CVE se procesa estrictamente como texto/metadatos no confiables. No se interpreta código ni sintaxis de shell contenida en descripciones.
-3. **Control de Privilegios:**
-   - Si una acción de Windows requiere permisos de Administrador y el proceso se ejecuta como usuario estándar, la acción se marca como `BLOCKED_PERMISSIONS` y no se intenta invocar `runas` ni scripts ocultos de elevación.
-   - En Linux/WSL, las operaciones de paquetes que requieran privilegios delegados verifican de antemano el acceso no interactivo (`sudo -n true`). Si se requiere elevación interactiva no delegada, la acción se bloquea inmediatamente (`BLOCKED_PERMISSIONS`) y se devuelve la instrucción para ejecución manual por el operador.
-4. **Bloqueo de Concurrencia:**
-   - Se utiliza un archivo de bloqueo en `~/.security-maintainer/maintainer.lock` con PID registrado y verificación de proceso activo para impedir colisiones o corrupciones de gestores de paquetes.
-5. **Caducidad e Inmutabilidad de Planes:**
-   - Cada plan cuenta con un identificador único y una huella SHA-256 canónica construida sobre la tupla `(action_id, target, product_id, installed_version, target_version, command, privileges)`.
-   - Cualquier alteración del archivo JSON del plan invalida la huella y es rechazada inmediatamente por `ApprovalManager`.
+1. **Subprocess Isolation and Strict Argument Allowlist:**
+   - Raw shell execution (`shell=True`) is strictly prohibited across all executors.
+   - Command arguments are strictly sanitized: metacharacters (`;&|`$><`) are rejected immediately.
+   - Only pre-approved package manager binaries (`winget`, `powershell`, `apt-get`, `brew`, `dpkg`) can be invoked.
+2. **Untrusted Advisory Data Handling:**
+   - Information retrieved from external vulnerability feeds (OSV, CISA KEV, NIST NVD) is treated as untrusted data. Descriptions and metadata are never executed or evaluated as shell syntax.
+3. **Privilege Boundary Enforcement:**
+   - If a Windows update requires elevated Administrator privileges and the process runs as a standard user, the action is marked as `BLOCKED_PERMISSIONS`. No silent UAC elevation is attempted.
+   - In Linux/WSL environments, actions requiring elevated rights verify non-interactive access beforehand. If interactive password prompting is required, the action is immediately blocked with instructions for manual review.
+4. **Concurrency Protection:**
+   - A lockfile located at `~/.security-maintainer/maintainer.lock` with active PID registration prevents race conditions, simultaneous executions, and package manager database corruption.
+5. **Plan Inmutability and Expiration:**
+   - Every plan carries a UUIDv4 identifier and an immutable SHA-256 fingerprint generated from the canonical action tuple. Any tampering with plan files invalidates approval.

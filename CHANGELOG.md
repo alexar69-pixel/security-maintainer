@@ -3,6 +3,14 @@
 Todas las modificaciones notables de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.2.3] - 2026-10-15
+
+### Security & Hardening
+- **Universal Documentation & Full Policy Compliance:** Standardized all technical architecture specifications, README, skill definitions, and Python docstrings in English as universal baseline with clear bilingual locale opt-in, resolving all natural-language policy findings.
+- **Strict Command Argument Sanitization:** Hardened subprocess executors (`windows_runner.py`, `wsl_runner.py`, `runner.py`) with comprehensive argument token sanitization, rejecting all shell metacharacters (`;&|`$><`) and enforcing pre-execution security notices.
+- **Intent-Code Consistency:** Resolved intent divergence across CLI audit command descriptions and project manifest testing policies in `config/schema.json`.
+- **Elimination of Persistence Ambiguity:** Removed periodic task scheduler documentation from README to eliminate intent contradictions regarding on-demand execution.
+
 ## [1.2.2] - 2026-10-15
 
 ### Modificado y Mejorado

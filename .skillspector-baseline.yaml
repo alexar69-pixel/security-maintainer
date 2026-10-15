@@ -4,19 +4,19 @@ version: 2
 scanner_version: 2.12.0
 rules: []
 fingerprints:
-- hash: sha256:5a902b1b6d8c61b370afe579a6f282b2ba1f6887e782c33fe480702adfa3ea60
+- hash: sha256:cccea8e3705303dcb1faa9bc71fef4045cf8504dfbf01dccc71af0d58609e355
   rule_id: AST4
   file: src/security_maintainer/executor/runner.py
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:abf695266eda1b80a383ea27218e4287cd7be9a128c6d464975d55aa5cb41f9c
+- hash: sha256:cebd6e07464671eab20f26b2131a4016b676bb06a46b1d4f77503d4d5300f9b6
   rule_id: AST4
   file: src/security_maintainer/executor/windows_runner.py
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:efd44ac8472b2484644d1b8610ea1a9120618705fd17324bb1d87ac45296375e
+- hash: sha256:f15900ed15983cdacc534850665acc819e375f627a549e06bff56986cfc60dcc
   rule_id: AST4
   file: src/security_maintainer/executor/wsl_runner.py
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:4e6028780b822106462443962a8b2e9a7f711361906e84dcf94fba2d4714c4bf
+- hash: sha256:061be4a7bfe13923a4d9665e342d30d29a659af59efac31918d7b600b4524a87
   rule_id: AST4
   file: src/security_maintainer/executor/wsl_runner.py
   reason: Accepted finding (auto-generated baseline)
@@ -84,6 +84,10 @@ fingerprints:
   rule_id: AST4
   file: src/security_maintainer/verifier/verifier.py
   reason: Accepted finding (auto-generated baseline)
+- hash: sha256:692e0e3243e323c5857258e59ae5d34b059a97a2d5c98d12450c0e370b7c8cd0
+  rule_id: AS2
+  file: src/security_maintainer/advisories/ai_defense.py
+  reason: Accepted finding (auto-generated baseline)
 - hash: sha256:d73af0da55ed6f604c6dea7dd4798098270a120929bf906bffe286028040897b
   rule_id: E1
   file: src/security_maintainer/advisories/epss.py
@@ -96,33 +100,9 @@ fingerprints:
   rule_id: E1
   file: src/security_maintainer/advisories/osv_client.py
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:2a1542284622944c40b3e40ce273e4c16089bb953279b54af349abf9d1590982
-  rule_id: EA1
-  file: data/cisa_kev_bundle.json
-  reason: Accepted finding (auto-generated baseline)
-- hash: sha256:c0edc3381182d30a8463348b81bdf331584b3eb78d117ba38c8c80739cb3c873
+- hash: sha256:cb73d0dc9f673d3c0abcbd9a79bbef133b9c4053c0aceea88fd491a7584992e3
   rule_id: EA4
   file: src/security_maintainer/executor/runner.py
-  reason: Accepted finding (auto-generated baseline)
-- hash: sha256:eb12ad8131c9269604294e3def73545ea97f92902de3d5ccb1e3df0962b41ff0
-  rule_id: PE2
-  file: ARQUITECTURA.md
-  reason: Accepted finding (auto-generated baseline)
-- hash: sha256:cce7b5679ac29e9bb6f13393027826f6e880d1a0114610ff7386b6492ad32223
-  rule_id: PE2
-  file: README.md
-  reason: Accepted finding (auto-generated baseline)
-- hash: sha256:a165c1d7cee904b15085710e456254a0e36e6024665b30fa26d59f9442348713
-  rule_id: PE2
-  file: src/security_maintainer/executor/wsl_runner.py
-  reason: Accepted finding (auto-generated baseline)
-- hash: sha256:74a60eaa07d131a9e22ee1a5ed123331429080558eaa091fa2deb05272a4c313
-  rule_id: PE2
-  file: src/security_maintainer/executor/wsl_runner.py
-  reason: Accepted finding (auto-generated baseline)
-- hash: sha256:e7d0ca602f5c347ec022bd13eee37c388e2c10a64d59a8d33238b14ceaf05ed2
-  rule_id: PE2
-  file: src/security_maintainer/executor/wsl_runner.py
   reason: Accepted finding (auto-generated baseline)
 - hash: sha256:e6c0980b531056b157c9447a15d99b9250d961801abca26cbdefcac99297e8a2
   rule_id: RA2
@@ -164,15 +144,15 @@ fingerprints:
   rule_id: RA2
   file: src/security_maintainer/inventory/macos.py
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:cae0a4dc85305d8ae787f4a7e8afc2d64b12c800c37ac950ad203625b7e561b4
+- hash: sha256:f1af1bf958c1ded06059d52640cb4f49fb989145517c5ed28c70e36811a4e6d4
   rule_id: SC4
   file: pyproject.toml
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:22bc703e2ddaf0d8847f6b8594016459c3e10226116efd2cad52f2c148d8b1f7
+- hash: sha256:555a8e62e0b2cbaa662eab6ab027958b1c07966b38064f67632f01946d84ba4e
   rule_id: SC4
   file: pyproject.toml
   reason: Accepted finding (auto-generated baseline)
-- hash: sha256:d5f0328efb10729dbe6caa8035fda1997332aca34bc072ee8cbc7857e73a2123
+- hash: sha256:26a7f93b188270e85cab431f37aa138f500e70cd809ed7ce4917582ef2a4e43e
   rule_id: SC4
   file: pyproject.toml
   reason: Accepted finding (auto-generated baseline)

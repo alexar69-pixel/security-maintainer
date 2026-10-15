@@ -1,5 +1,5 @@
 """
-AI & Agent Security Auditor / Auditor de seguridad para agentes de IA y modelos locales.
+AI & Agent Security Auditor.
 Detects risks based on OWASP Top 10 for LLMs / Agentic Systems and SkillSpector:
 - Exposure of unauthenticated local LLM inference engines (Ollama, LM Studio, etc.)
 - MCP Tool Poisoning and excessive permissions
@@ -22,19 +22,19 @@ logger = logging.getLogger(__name__)
 
 # Standard ports used by local AI inference engines
 KNOWN_LLM_SERVICES = {
-    11434: ("Ollama", "Motor de inferencia LLM local de Ollama"),
-    1234: ("LM Studio", "Servidor de modelos local de LM Studio"),
-    8080: ("LocalAI / llama.cpp", "Servidor compatible con API de OpenAI"),
-    8000: ("vLLM / TextGenWebUI", "Servidor de inferencia de alto rendimiento"),
-    5000: ("TextGenWebUI / KoboldAI", "Interfaz web y backend de inferencia"),
+    11434: ("Ollama", "Ollama local LLM inference engine"),
+    1234: ("LM Studio", "LM Studio local model server"),
+    8080: ("LocalAI / llama.cpp", "OpenAI-compatible local inference API"),
+    8000: ("vLLM / TextGenWebUI", "High-performance LLM inference server"),
+    5000: ("TextGenWebUI / KoboldAI", "Web UI and inference backend"),
 }
 
 # Instruction override and agent manipulation detection patterns
 PROMPT_INJECTION_PATTERNS = [
-    (re.compile(r"(?i)(ignore\s+(all\s+)?(previous|prior|above)\s+instructions)", re.IGNORECASE), "Anulación explícita de instrucciones del sistema"),
-    (re.compile(r"(?i)(you\s+are\s+now\s+in\s+unrestricted\s+mode|dan\s+mode|jailbreak)", re.IGNORECASE), "Intento de evasión de restricciones (Jailbreak)"),
-    (re.compile(r"(?i)(system\s*prompt\s*override|disregard\s+system\s+prompt)", re.IGNORECASE), "Intento de sobreescritura de prompt de sistema"),
-    (re.compile(r"[\u200B\u200C\u200D\uFEFF]", re.UNICODE), "Caracteres Unicode invisibles de ancho cero (posible ofuscación de prompt)"),
+    (re.compile(r"(?i)(ignore\s+(all\s+)?(previous|prior|above)\s+instructions)", re.IGNORECASE), "Explicit override of system instructions"),
+    (re.compile(r"(?i)(you\s+are\s+now\s+in\s+unrestricted\s+mode|dan\s+mode|jailbreak)", re.IGNORECASE), "Restriction evasion or jailbreak attempt"),
+    (re.compile(r"(?i)(system\s*prompt\s*override|disregard\s+system\s+prompt)", re.IGNORECASE), "System prompt override attempt"),
+    (re.compile(r"[\u200B\u200C\u200D\uFEFF]", re.UNICODE), "Invisible zero-width unicode characters"),
 ]
 
 # Sensitive AI environment variables that should not leak
@@ -69,11 +69,8 @@ class AIAgentSecurityAuditor:
         """Audits local LLM inference engines listening on unauthenticated interfaces."""
         findings = []
         for port, (service_name, desc) in KNOWN_LLM_SERVICES.items():
-            # Comprobar si el puerto está abierto en localhost
             is_local = self._check_socket("127.0.0.1", port)
             if is_local:
-                # Comprobar si además está accesible externamente en 0.0.0.0 / IP pública
-                # Intentamos conectar a la IP de red local
                 try:
                     local_ip = socket.gethostbyname(socket.gethostname())
                     is_public = False
@@ -86,15 +83,15 @@ class AIAgentSecurityAuditor:
                     findings.append(
                         AISecurityFinding(
                             threat_type=AIThreatType.UNAUTHENTICATED_LLM_SERVICE,
-                            title=f"Servidor LLM {service_name} expuesto a la red local",
+                            title=f"Local LLM Server {service_name} exposed to local network",
                             severity=SeverityLevel.HIGH,
-                            target_component=f"{service_name} (Puerto {port})",
+                            target_component=f"{service_name} (Port {port})",
                             description=(
-                                f"El servicio {desc} está escuchando en una interfaz no aislada ({local_ip}:{port}). "
-                                "Cualquier dispositivo en la misma red podría enviar peticiones sin autenticación."
+                                f"Service {desc} is listening on an unisolated network interface ({local_ip}:{port}). "
+                                "Devices on the local network can dispatch arbitrary prompts without authentication."
                             ),
-                            evidence=f"Puerto {port} abierto y accesible en {local_ip}",
-                            remediation_recommendation=f"Configure {service_name} para vincularse exclusivamente a 127.0.0.1 (OLLAMA_HOST=127.0.0.1)."
+                            evidence=f"Port {port} open and reachable on {local_ip}",
+                            remediation_recommendation=f"Bind {service_name} strictly to localhost / 127.0.0.1 (e.g. OLLAMA_HOST=127.0.0.1)."
                         )
                     )
         return findings
@@ -121,21 +118,20 @@ class AIAgentSecurityAuditor:
                         for s_name, s_cfg in servers.items():
                             cmd = s_cfg.get("command", "")
                             args = s_cfg.get("args", [])
-                            # Detectar si un servidor MCP tiene comandos arbitrarios con bash/powershell/cmd
                             if cmd in ["bash", "sh", "powershell", "pwsh", "cmd.exe", "cmd"]:
                                 findings.append(
                                     AISecurityFinding(
                                         threat_type=AIThreatType.EXCESSIVE_AGENCY,
-                                        title=f"Servidor MCP '{s_name}' invoca shell directamente",
+                                        title=f"MCP Server '{s_name}' directly executes shell interpreter",
                                         severity=SeverityLevel.HIGH,
                                         target_component=f"MCP Server: {s_name}",
-                                        description="El servidor MCP está configurado para ejecutar intérpretes de comandos shell directos.",
+                                        description="MCP server is configured to invoke raw interactive command interpreters.",
                                         evidence=f"command: {cmd}, args: {' '.join(str(a) for a in args)}",
-                                        remediation_recommendation="Restrinja el servidor MCP a binarios dedicados con parámetros estrictamente validados."
+                                        remediation_recommendation="Restrict the MCP server to dedicated binaries with strictly validated parameters."
                                     )
                                 )
             except Exception as e:
-                logger.debug(f"No se pudo analizar config MCP en {p}: {e}")
+                logger.debug(f"Could not inspect MCP config at {p}: {e}")
 
         return findings
 
@@ -151,7 +147,6 @@ class AIAgentSecurityAuditor:
             if not base.exists():
                 continue
 
-            # Buscar archivos relevantes: .md, .txt, .json
             candidates = []
             try:
                 for ext in ["*.md", "*.txt"]:
@@ -170,17 +165,17 @@ class AIAgentSecurityAuditor:
                             findings.append(
                                 AISecurityFinding(
                                     threat_type=AIThreatType.PROMPT_INJECTION,
-                                    title=f"Posible inyección de prompt en {candidate.name}",
+                                    title=f"Potential prompt injection pattern in {candidate.name}",
                                     severity=SeverityLevel.MEDIUM,
                                     target_component=str(candidate),
-                                    description=f"Se detectó un patrón de manipulación de agente: {desc}.",
+                                    description=f"Agent manipulation indicator detected: {desc}.",
                                     evidence=match.group(0)[:80],
-                                    remediation_recommendation="Verifique el origen del texto y aísle las instrucciones de usuario de las directivas de sistema."
+                                    remediation_recommendation="Verify origin of text content and isolate user input from system prompts."
                                 )
                             )
                             break
                 except Exception as e:
-                    logger.debug(f"Error analizando {candidate}: {e}")
+                    logger.debug(f"Error inspecting file {candidate}: {e}")
 
         return findings
 
@@ -198,15 +193,15 @@ class AIAgentSecurityAuditor:
             findings.append(
                 AISecurityFinding(
                     threat_type=AIThreatType.CREDENTIAL_EXPOSURE,
-                    title="Variables de entorno con tokens de IA accesibles",
+                    title="Environment variables contain readable AI service provider credentials",
                     severity=SeverityLevel.LOW,
                     target_component="Environment Variables",
                     description=(
-                        f"Se detectaron {len(exposed_keys)} variable(s) de entorno con claves de proveedores de IA. "
-                        "Cualquier proceso o script ejecutado por el agente tiene visibilidad sobre estos secretos."
+                        f"Detected {len(exposed_keys)} environment variable(s) holding AI credentials. "
+                        "Processes or untrusted tools spawned by agents may have visibility over these tokens."
                     ),
                     evidence=", ".join(exposed_keys),
-                    remediation_recommendation="Utilice almacenes de secretos seguros o limite la delegación de variables de entorno a subprocesos."
+                    remediation_recommendation="Use secure secret stores or restrict environment variable inheritance for subprocesses."
                 )
             )
 

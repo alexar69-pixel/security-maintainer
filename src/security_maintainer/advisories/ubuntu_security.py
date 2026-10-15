@@ -1,6 +1,6 @@
 """
-Cliente para la API de Seguridad de Canonical / Ubuntu Security Tracker.
-Permite vincular paquetes de Ubuntu con avisos oficiales USN (Ubuntu Security Notices) y verificar parches oficiales.
+Canonical Ubuntu Security Tracker API Client.
+Maps Ubuntu packages to official USN (Ubuntu Security Notices) and verifies security patches.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ DEFAULT_UBUNTU_API_URL = "https://ubuntu.com/security/cves.json"
 
 
 class UbuntuSecurityClient:
-    """Consulta la API oficial de Canonical / Ubuntu Security Notices (USN)."""
+    """Queries Canonical Ubuntu Security Notices (USN) API for package CVE tracking."""
 
     def __init__(self, config: Dict[str, Any], cache: AdvisoryCache, fixture_data: Optional[Dict[str, Any]] = None):
         self.config = config.get("advisories", {}).get("ubuntu_security", {})
@@ -28,7 +28,7 @@ class UbuntuSecurityClient:
         self.last_query_failed = False
 
     def get_package_advisories(self, package_name: str, release: str = "noble") -> List[Dict[str, Any]]:
-        """Recupera los avisos USN y CVEs asociados a un paquete en una release de Ubuntu."""
+        """Retrieves official USN advisories and CVEs associated with a package in an Ubuntu release."""
         if not package_name:
             return []
 

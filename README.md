@@ -1,91 +1,66 @@
-# `security-maintainer` — Skill de OpenClaw
+# `security-maintainer` — Universal OpenClaw Skill
 
-[![CI](https://github.com/openclaw/security-maintainer/actions/workflows/ci.yml/badge.svg)](https://github.com/openclaw/security-maintainer/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-orange.svg)](https://openclaw.dev)
 
-Skill para **OpenClaw** diseñada para mantener actualizado el software de tu PC anfitrión Windows y sus distribuciones WSL, detectar vulnerabilidades conocidas (CVE, CISA KEV, OSV, advisories oficiales de distribuciones) y aplicar remediaciones autorizadas bajo un estricto modelo de control y verificación post-remediación.
+Universal security maintenance and vulnerability remediation skill for **OpenClaw**. Audits host software across Windows, macOS, and Linux/WSL, correlates packages with official vulnerability feeds (OSV.dev, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC), detects AI agent security risks (unauthenticated LLMs, prompt injections, exposed credentials), and applies authorized fixes with post-installation version verification.
+
+> [!NOTE]
+> **Multilingual Support:**
+> This repository documentation and CLI interfaces are provided in English as the primary universal standard. Spanish-language triggers and report localization are supported natively.
 
 ---
 
-## 1. Características Principales
+## 1. Key Capabilities
 
-- **Dos Funciones Complementarias:**
-  1. *Mantenimiento Preventivo:* Detección y aplicación de actualizaciones generales disponibles, aunque no tengan un CVE asignado.
-  2. *Remediación de Seguridad:* Correlación con bases de datos de vulnerabilidades oficiales (OSV.dev, CISA KEV, Distro Security Trackers), identificación del parche oficial y verificación post-instalación.
-- **Diferenciación Rigurosa de Hallazgos:**
-  - Actualización general disponible (sin vulnerabilidad confirmada).
-  - Parche oficial de seguridad (resuelve CVEs específicos).
-  - Mitigación de configuración (no altera binarios).
-  - Vulnerabilidad sin parche oficial disponible.
-  - Producto sin soporte / Fin de vida (EOL).
-  - Bug funcional en proyectos de código propio.
-- **Tres Modos de Operación:**
-  - `audit` (Solo lectura): Inventaría, cruza vulnerabilidades y emite informes sin tocar el sistema.
-  - `ask` (Predeterminado): Presenta un plan numerado con huella criptográfica SHA-256 y caducidad temporal (30 min); requiere aprobación explícita antes de ejecutar.
-  - `auto`: Aplica automáticamente solo las acciones expresamente autorizadas por una directiva persistente.
-- **Verificación Efectiva:** Un código de salida `0` no es suficiente para declarar un fallo corregido; el sistema re-inventaría el componente y comprueba la versión efectiva instalada y el estado de reinicios pendientes.
-- **Portabilidad y Cero Telemetría:** Funciona con la biblioteca estándar de Python (>= 3.10), sin recopilación de datos personales ni contraseñas.
+- **Vulnerability Remediation & Patching:** Correlates installed packages against CISA KEV, OSV, and distribution security trackers.
+- **AI & Agent Security Auditing:** Detects exposed local inference engines (Ollama, LM Studio on port 11434/1234), prompt injection patterns, excessive MCP tool permissions, and leaked AI API credentials.
+- **Deterministic Action Plans:** Uses a strict `ask` mode by default. Generates a unique plan ID and SHA-256 fingerprint; modifications cannot execute without cryptographic validation.
+- **Effective Version Verification:** Verifies post-installation binaries directly via system package managers (`winget list`, `dpkg-query`, `brew list --versions`).
+- **Subprocess and Argument Sanitization:** Enforces strict binary allowlists and sanitizes all command tokens against shell metacharacters (`;&|`$><`).
+- **Zero Silent Privilege Escalation:** Actions requiring elevated rights are blocked and reported unless explicitly configured.
 
 ---
 
-## 2. Entorno y Alcance
+## 2. Environments and Platform Support
 
-- **OpenClaw en WSL:** Diseñado específicamente para entornos donde el agente OpenClaw se ejecuta dentro de WSL (habitualmente con el usuario `openclaw`) y administra:
-  - El anfitrión **Windows** (WinGet, Registro de desinstalación, Windows Update).
-  - Las distribuciones **WSL** activas (`apt`, `dpkg`, `rpm`, `apk` y versión del kernel WSL).
-  - **Proyectos de desarrollo** registrados explícitamente (Node.js y Python).
-- **Protección de Distribuciones Detenidas:** Las distribuciones WSL detenidas no se inician automáticamente a menos que se configure explícitamente `auto_start_stopped_distros: true`.
-- **Sin elevaciones de privilegios silenciosas:** Si una actualización requiere permisos de Administrador en Windows o `sudo` en WSL y no están concedidos, la acción se registra como `BLOCKED_PERMISSIONS` junto con la instrucción manual exacta.
+- **Windows Host OS:** Manages WinGet packages, registry installations, and pending Windows Updates.
+- **WSL Distributions:** Audits and updates active distributions (`apt`, `dpkg`, `apk`, `dnf`, `rpm`). Stopped distributions remain untouched.
+- **macOS:** Inspects and upgrades Homebrew formulas and Casks.
+- **Local Projects:** Scans `package.json` and `requirements.txt` manifests in registered development repositories.
 
 ---
 
-## 3. Instalación
+## 3. Installation
 
-### Opción A: Desde ClawHub / OpenClaw CLI (Recomendado)
+### From ClawHub (Recommended)
 
 ```bash
-# Dentro de tu entorno WSL donde corre OpenClaw:
 openclaw skills install security-maintainer
 ```
 
-### Opción B: Instalación Manual desde Repositorio
+### Manual Installation
 
 ```bash
-# Clonar en tu directorio de skills de OpenClaw
-git clone https://github.com/openclaw/security-maintainer.git ~/.openclaw/skills/security-maintainer
-
-# Instalar dependencias en el entorno virtual de Python
+git clone https://github.com/alexar69-pixel/security-maintainer.git ~/.openclaw/skills/security-maintainer
 cd ~/.openclaw/skills/security-maintainer
 python3 -m pip install -e .
 ```
 
 ---
 
-## 4. Permisos por Función
+## 4. Configuration (`default_config.yaml`)
 
-| Función | Ámbito | Nivel de Privilegios | Comportamiento si Faltan Permisos |
-| :--- | :--- | :--- | :--- |
-| **Auditoría e Inventario** | Windows / WSL | Usuario estándar | Permite auditar sin elevación. |
-| **Actualizar Apps WinGet** | Windows | Usuario estándar / Admin | Si el instalador requiere UAC, se notifica bloqueo. |
-| **Windows Update** | Windows | Administrador | Requiere terminal elevada; se marca como bloqueada. |
-| **Actualizar Paquetes APT** | WSL | `sudo` (no interactivo) | Comprueba `sudo -n true`; si pide clave, se bloquea. |
-| **Actualizar Proyectos Dev** | WSL / Windows | Propietario del repo | Modifica `package.json`/`requirements.txt` local. |
-
----
-
-## 5. Configuración (`default_config.yaml`)
-
-El archivo de configuración reside en `~/.security-maintainer/config.json` o se puede pasar con `--config`:
+Configuration can be customized via `~/.security-maintainer/config.json` or supplied via the `--config` flag:
 
 ```yaml
-version: "1.0.0"
-mode: "ask" # 'ask' (default), 'audit' o 'auto'
+version: "1.2.3"
+mode: "ask" # 'ask' (default), 'audit', or 'auto'
 
 windows:
   enabled: true
-  allow_major_upgrades: false # Bloquea saltos 1.x -> 2.x por defecto
-  allow_reboots: false        # Reinicios desatendidos desactivados
+  allow_major_upgrades: false
+  allow_reboots: false
   excluded_packages:
     - "Microsoft.Edge"
 
@@ -93,16 +68,10 @@ wsl:
   enabled: true
   auto_start_stopped_distros: false
   allow_reboots: false
-  distributions:
-    OpenClawGateway:
-      enabled: true
-      security_updates_only: true
-      configured_services:
-        - "ssh"
 
 projects:
   registered_paths:
-    - "/home/openclaw/proyectos/mi-api"
+    - "/home/user/projects/my-api"
   auto_run_tests: true
 
 advisories:
@@ -121,74 +90,54 @@ execution:
 
 ---
 
-## 6. Comandos e Invocación desde OpenClaw
-
-La skill está diseñada para responder de manera determinista y acotada ante los siguientes disparadores específicos:
-
-- `security-maintainer: audita el software del sistema y vulnerabilidades` -> Ejecuta una auditoría de inventario de solo lectura.
-- `security-maintainer: busca actualizaciones de seguridad pendientes` -> Genera un plan de mantenimiento en modo `ask`.
-- `security-maintainer: audita la seguridad de agentes de IA y servidores locales` -> Analiza puertos LLM, inyecciones de prompt y credenciales de IA.
-- `security-maintainer: genera un plan de remediación para vulnerabilidades` -> Construye el plan numerado y emite la huella SHA-256.
-- `security-maintainer: aplica el plan de seguridad aprobado` -> Requiere el identificador de plan y su huella SHA-256 para aplicar remediaciones.
-- `security-maintainer: verifica el estado de las correcciones de seguridad` -> Inspecciona versiones efectivas con `RemediationVerifier`.
-
-> [!NOTE]
-> **Límites de alcance (Scope Boundaries):**
-> La skill no atiende peticiones genéricas o ambiguas que no especifiquen el prefijo `security-maintainer:`. No realiza desinstalaciones destructivas, modificaciones de configuración fuera de los paquetes identificados, ni reinicios no supervisados.
-
----
-
-## 7. Uso mediante Interfaz de Línea de Comandos (CLI)
+## 5. Command-Line Interface (CLI)
 
 ```bash
-# 1. Auditoría completa (solo lectura)
+# 1. Complete read-only audit (software, CVEs, and AI defense)
 python3 -m security_maintainer.cli audit --all
 
-# 2. Generar plan con huella SHA-256
+# 2. Software-only audit
+python3 -m security_maintainer.cli audit --environment all
+
+# 3. AI agent security audit only
+python3 -m security_maintainer.cli audit --ai-defense
+
+# 4. Generate remediation plan (ask mode)
 python3 -m security_maintainer.cli plan --environment all
 
-# 3. Aplicar un plan aprobado formalmente
+# 5. Apply pre-approved remediation plan with SHA-256 validation
 python3 -m security_maintainer.cli apply --plan-id plan-a8f9c102 --plan-hash e3b0c442...
 
-# 4. Verificar estado post-remediación con RemediationVerifier
+# 6. Verify post-remediation effective versions
 python3 -m security_maintainer.cli verify --environment all --plan-id plan-a8f9c102
 
-# 5. Ver último informe generado
+# 7. View latest report
 python3 -m security_maintainer.cli report
 ```
 
 ---
 
-## 8. Automatización de Revisiones Periódicas
+## 6. OpenClaw Natural Language Invocations
 
-Si el usuario desea programar auditorías periódicas, puede delegar la recurrencia al orquestador del agente en OpenClaw:
+The skill triggers on unambiguous, scoped prompts:
 
-```text
-/schedule cron="0 9 * * 1" prompt="security-maintainer: audita el software del sistema y vulnerabilidades"
-```
+- `security-maintainer: audit system software and vulnerabilities` -> Runs read-only inventory and vulnerability analysis.
+- `security-maintainer: audit ai agent security and local llm services` -> Inspects local LLMs, prompts, and MCP configurations.
+- `security-maintainer: search for pending security updates` -> Checks for available security patches.
+- `security-maintainer: generate security remediation plan` -> Builds a numbered action plan with an SHA-256 fingerprint.
+- `security-maintainer: apply approved security plan` -> Applies updates after verifying the plan hash.
+- `security-maintainer: verify status of security patches` -> Confirms installed versions via `RemediationVerifier`.
 
 > [!NOTE]
-> **Aviso de Persistencia del Orquestador:**
-> Esta programación es gestionada exclusivamente por el programador de tareas del agente OpenClaw en modo de solo lectura (`audit`). El software de la skill no registra deamons, servicios en segundo plano ni tareas programadas nativas en el sistema operativo del anfitrión.
+> **Scope Boundaries:**
+> The skill does not act on ambiguous system commands lacking the `security-maintainer:` prefix. It does not perform destructive uninstalls, unrequested reboots, or arbitrary script execution.
 
 ---
 
-## 9. Desinstalación
+## 7. Technical Documentation
 
-Para desinstalar la skill:
-
-```bash
-openclaw skills remove security-maintainer
-```
-
-Para restablecer los datos de caché y configuración, se puede eliminar manualmente el directorio de datos del usuario (`.security-maintainer` en el directorio de inicio).
-
----
-
-## 10. Documentación Técnica Adicional
-
-- [Arquitectura Técnica](ARQUITECTURA.md) — Diagramas de flujo, control de estados y contención.
-- [Matriz de Cobertura](COBERTURA.md) — Detalle exhaustivo de componentes gestionables, parciales y no soportados.
-- [Ejemplo de Informe](EJEMPLO_INFORME.md) — Modelo ficticio de informe en Markdown.
-- [Política de Seguridad](SECURITY.md) — Divulgación responsable de vulnerabilidades.
-- [Licencia](LICENSE) — Licencia Apache 2.0.
+- [Technical Architecture](ARCHITECTURE.md) — Architectural state machines, concurrency locks, and isolation.
+- [Coverage Matrix](COBERTURA.md) — Detailed breakdown of managed components and package managers.
+- [Sample Report](EJEMPLO_INFORME.md) — Example of Markdown output generated by the skill.
+- [Security Policy](SECURITY.md) — Responsible disclosure process.
+- [License](LICENSE) — Apache 2.0 License.

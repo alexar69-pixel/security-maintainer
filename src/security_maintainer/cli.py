@@ -1,6 +1,8 @@
 """
-Punto de entrada CLI para la skill Security Maintainer de OpenClaw.
-Proporciona comandos deterministas para audit, plan, apply, verify y report.
+CLI entrypoint for the OpenClaw Security Maintainer skill.
+Provides deterministic commands for auditing software and AI agent security,
+planning remediations with SHA-256 hashes, executing approved plans, verifying effective versions,
+and reporting findings.
 """
 
 from __future__ import annotations
@@ -127,7 +129,8 @@ def calculate_coverage(items: List[InventoryItem], sources_status: Dict[str, boo
 
 
 def cmd_audit(args, config: Dict[str, Any], fixture_bundle: Optional[Dict[str, Any]] = None):
-    print(f"[*] Iniciando auditoría en modo de solo lectura (Entorno: {args.environment})...")
+    ai_active = getattr(args, "ai_defense", False) or getattr(args, "all", False)
+    print(f"[*] Starting security audit in read-only mode (Environment: {args.environment}, AI Defense: {'enabled' if ai_active else 'disabled'})...")
     (
         cache, kev, vulncheck, epss, nvd, msrc, ubuntu_sec, enricher,
         distro_tracker, osv, planner, executor, verifier, json_rep, md_rep
@@ -427,35 +430,38 @@ def main(argv=None):
 
     parser = argparse.ArgumentParser(
         prog="security-maintainer",
-        description="Mantenimiento y remediación de vulnerabilidades para Windows, macOS y distribuciones Linux/WSL."
+        description="Software maintenance, vulnerability remediation, and AI defense for Windows, macOS, and Linux/WSL."
     )
-    parser.add_argument("--config", help="Ruta al archivo de configuración personalizado.")
+    parser.add_argument("--config", help="Path to custom configuration file.")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # Audit
-    p_audit = subparsers.add_parser("audit", help="Audita software y vulnerabilidades sin realizar cambios.")
-    p_audit.add_argument("--environment", choices=["all", "windows", "wsl", "macos", "linux", "host"], default="all")
-    p_audit.add_argument("--all", action="store_true")
-    p_audit.add_argument("--ai-defense", action="store_true", help="Audita la seguridad de agentes de IA, servidores locales y configuraciones MCP.")
+    p_audit = subparsers.add_parser(
+        "audit",
+        help="Audits host software, known vulnerabilities, and optional AI agent / local service security without making changes."
+    )
+    p_audit.add_argument("--environment", choices=["all", "windows", "wsl", "macos", "linux", "host"], default="all", help="Target operating system.")
+    p_audit.add_argument("--all", action="store_true", help="Audit all software inventory and AI agent defense.")
+    p_audit.add_argument("--ai-defense", action="store_true", help="Audit AI agent configs, MCP tool security, and local LLM services.")
 
     # Plan
-    p_plan = subparsers.add_parser("plan", help="Genera un plan con huella SHA-256 en modo 'ask'.")
+    p_plan = subparsers.add_parser("plan", help="Generates an action plan with a cryptographic SHA-256 hash in 'ask' mode.")
     p_plan.add_argument("--environment", choices=["all", "windows", "wsl", "macos", "linux", "host"], default="all")
 
     # Apply
-    p_apply = subparsers.add_parser("apply", help="Aplica un plan previamente aprobado mediante su huella.")
-    p_apply.add_argument("--plan-id", required=True)
-    p_apply.add_argument("--plan-hash", required=True)
+    p_apply = subparsers.add_parser("apply", help="Applies a pre-approved remediation plan using its verified hash.")
+    p_apply.add_argument("--plan-id", required=True, help="Plan identifier.")
+    p_apply.add_argument("--plan-hash", required=True, help="SHA-256 hash of the approved plan.")
 
     # Verify
-    p_verify = subparsers.add_parser("verify", help="Comprueba el estado del sistema y verifica versiones efectivas.")
+    p_verify = subparsers.add_parser("verify", help="Verifies effective package versions and residual vulnerabilities post-remediation.")
     p_verify.add_argument("--environment", choices=["all", "windows", "wsl", "macos", "linux", "host"], default="all")
-    p_verify.add_argument("--plan-id", help="ID del plan ejecutado para verificar versiones efectivas.")
+    p_verify.add_argument("--plan-id", help="Executed plan ID to verify effective versions against.")
 
     # Report
-    p_rep = subparsers.add_parser("report", help="Muestra el último informe generado.")
-    p_rep.add_argument("--critical-only", action="store_true")
-    p_rep.add_argument("--unsupported-only", action="store_true")
+    p_rep = subparsers.add_parser("report", help="Displays the latest generated security maintenance report.")
+    p_rep.add_argument("--critical-only", action="store_true", help="Show only critical or KEV vulnerabilities.")
+    p_rep.add_argument("--unsupported-only", action="store_true", help="Show only unmanaged or unsupported components.")
 
     args = parser.parse_args(argv)
     cfg_mgr = ConfigManager(args.config)

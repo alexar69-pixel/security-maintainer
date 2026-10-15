@@ -1,6 +1,7 @@
 """
-Windows Action Runner / Ejecutor de acciones en el host Windows sin elevación silenciosa.
-Enforces deterministic execution, admin privilege checks, and strict binary allowlists.
+Windows Action Runner.
+Executes pre-approved software updates on the Windows host environment.
+Enforces privilege validation, argument sanitization, binary allowlists, and execution logging.
 """
 
 from __future__ import annotations
@@ -9,6 +10,7 @@ import subprocess
 import shutil
 import ctypes
 import os
+import re
 from pathlib import Path
 from typing import Dict, Any, Optional
 
@@ -20,6 +22,9 @@ ALLOWED_WINDOWS_BINARIES = {
     "winget", "winget.exe", "powershell", "powershell.exe", "cmd.exe", "msiexec", "msiexec.exe"
 }
 
+# Disallow shell metacharacters in individual command tokens
+DANGEROUS_SHELL_CHARS_REGEX = re.compile(r"[;&|`$><\n\r]")
+
 
 def is_windows_admin() -> bool:
     """Checks if the current process holds Administrator rights in Windows."""
@@ -30,7 +35,7 @@ def is_windows_admin() -> bool:
 
 
 class WindowsRunner:
-    """Executes authorized update actions on Windows with privilege and binary controls."""
+    """Executes authorized update actions on Windows with privilege and input controls."""
 
     def __init__(self, config: Dict[str, Any], fixture_results: Optional[Dict[str, Any]] = None):
         self.config = config
@@ -49,10 +54,10 @@ class WindowsRunner:
                 verification_passed=mock.get("verification_passed", True),
                 reboot_pending=mock.get("reboot_pending", False),
                 status=ActionStatus(mock.get("status", ActionStatus.EXECUTED_VERIFIED.value)),
-                diagnostic_output=mock.get("output", "Simulado en fixture.")
+                diagnostic_output=mock.get("output", "Simulated in test fixture.")
             )
 
-        # 1. Comprobación de privilegios de Administrador
+        # 1. Privilege check
         if action.required_privileges == "admin":
             if not is_windows_admin():
                 return ExecutionResult(
@@ -63,12 +68,12 @@ class WindowsRunner:
                     exit_code=126,
                     status=ActionStatus.BLOCKED_PERMISSIONS,
                     error_message=(
-                        f"Acción bloqueada: Se requieren privilegios de Administrador para actualizar '{action.product_name}'. "
-                        "OpenClaw no realiza elevación silenciosa. Ejecuta la terminal como Administrador o aplica manualmente."
+                        f"Action blocked / Acción bloqueada: Se requieren privilegios de Administrador para actualizar '{action.product_name}'. "
+                        "OpenClaw does not perform silent elevation. Run in an elevated prompt or apply manually."
                     )
                 )
 
-        # 2. Validación de allowlist de ejecutables para prevenir ejecución arbitraria
+        # 2. Command input and binary allowlist validation
         if not action.exact_command or not isinstance(action.exact_command, list):
             return ExecutionResult(
                 action_id=action.action_id,
@@ -77,7 +82,7 @@ class WindowsRunner:
                 success=False,
                 exit_code=1,
                 status=ActionStatus.FAILED,
-                error_message="Comando inválido o vacío."
+                error_message="Invalid or empty command."
             )
 
         binary_name = Path(action.exact_command[0]).name.lower()
@@ -89,10 +94,28 @@ class WindowsRunner:
                 success=False,
                 exit_code=126,
                 status=ActionStatus.BLOCKED_PERMISSIONS,
-                error_message=f"Ejecutable no autorizado en la lista de permitidos de Windows: {binary_name}"
+                error_message=f"Unauthorized executable in Windows allowlist: {binary_name}"
             )
 
-        # 3. Ejecución determinista
+        # Verify arguments do not contain shell injection characters
+        for arg in action.exact_command:
+            if not isinstance(arg, str) or DANGEROUS_SHELL_CHARS_REGEX.search(arg):
+                return ExecutionResult(
+                    action_id=action.action_id,
+                    product_name=action.product_name,
+                    manager=action.manager,
+                    success=False,
+                    exit_code=126,
+                    status=ActionStatus.BLOCKED_PERMISSIONS,
+                    error_message=f"Dangerous metacharacter detected in command argument: {arg}"
+                )
+
+        # 3. User safety logging and deterministic execution
+        logger.warning(
+            "[SECURITY AUDIT] Executing pre-approved Windows package modification: %s",
+            " ".join(action.exact_command)
+        )
+
         try:
             res = subprocess.run(
                 action.exact_command,
@@ -119,7 +142,7 @@ class WindowsRunner:
                 success=False,
                 exit_code=124,
                 status=ActionStatus.FAILED,
-                error_message=f"Tiempo de espera agotado al actualizar {action.product_name}."
+                error_message=f"Execution timed out while updating {action.product_name}."
             )
         except Exception as e:
             return ExecutionResult(
@@ -129,5 +152,5 @@ class WindowsRunner:
                 success=False,
                 exit_code=1,
                 status=ActionStatus.FAILED,
-                error_message=f"Error inesperado durante la ejecución: {e}"
+                error_message=f"Unexpected error during execution: {e}"
             )
