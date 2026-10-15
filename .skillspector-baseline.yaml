@@ -1,0 +1,516 @@
+# SkillSpector baseline — findings listed here are suppressed on future scans.
+# Edit 'reason' fields and add glob 'rules' as needed. See docs/SUPPRESSION.md.
+version: 2
+scanner_version: 2.12.0
+rules: []
+fingerprints:
+- hash: sha256:d2342622fc1119aa1f5c5b5d30386580c342dab92913fa96ccd9903c2b6e55d8
+  rule_id: AST4
+  file: src/security_maintainer/advisories/cisa_kev.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:3b120bffde1b57a74a8c5ca700249053b9c19b1a414244ae11462d863546cf23
+  rule_id: AST4
+  file: src/security_maintainer/executor/runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:9da46b809100af797070ad3e59f2c1ab92748c17db4ed107fcf29b3cfd8b3ed7
+  rule_id: AST4
+  file: src/security_maintainer/executor/windows_runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:923a057ac101d2f3a95bf935f199d4b9650d423a9752388020c433c64f58376c
+  rule_id: AST4
+  file: src/security_maintainer/executor/wsl_runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:19eab84f83d4d797e0a3bb19e3b40700cf109be908a0d3a1dc30a87e76088e10
+  rule_id: AST4
+  file: src/security_maintainer/executor/wsl_runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:ed69ed06c2ea846e68ad3fb36de1f61407d39c53f66de8eef4592904ab61982d
+  rule_id: AST4
+  file: src/security_maintainer/inventory/exposure.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:86a5f9b411485c9c362beaebc326e843a056eced4f58cccd48f948b7bd1c1ba5
+  rule_id: AST4
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:17a91587587ddaf39716bf1949c555c251ae4689365d0997e5bdd7f4ddee2f1b
+  rule_id: AST4
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:8889d9cadc9a5cb343b3ee92360684da31079b75348d9083caa60d2faf0de522
+  rule_id: AST4
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:b4d942f9f4647a98ae665bd0a74816c05d22d6a99e0a8abb1fb6daf1b2814f37
+  rule_id: AST4
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:0b9b165b9b15b96f58e4b33549abc3cd4f5ef79b8d4ad2cdbb9b2f31e5ac5995
+  rule_id: AST4
+  file: src/security_maintainer/inventory/package_managers.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:b4cc6cdcf82487980b3d1c284cd6895bc59727b2b75c3c9d5538f1d05f445a7a
+  rule_id: AST4
+  file: src/security_maintainer/inventory/windows.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:e12ed752bdd90e6895570b4c23d149ae5f4ca7b6dc849e8206866d7db38a0edd
+  rule_id: AST4
+  file: src/security_maintainer/inventory/wsl.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:13fffeb331058fe7e32742b940506feba0bf37d657659bf3784d83061cf60713
+  rule_id: AST4
+  file: src/security_maintainer/inventory/wsl.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:560d6bff8c8045d4fef86a837ffadbc4852413e41198a880787cfa9cf317dda4
+  rule_id: AST4
+  file: src/security_maintainer/inventory/wsl.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:e2fecbc0dd8a6290368382c98fd5536beccebda094b05fbeaf9796927bdd4947
+  rule_id: AST4
+  file: src/security_maintainer/inventory/wsl.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:335900adfefcea53731e0d16ccf7ecd9e775c8bf05dff97c6a6e3205e8193da3
+  rule_id: AST4
+  file: src/security_maintainer/verifier/verifier.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:203f7e08682b08bccabaa7feab6a5e42e860289ff36d38f33ca0074975ddd330
+  rule_id: AST4
+  file: src/security_maintainer/verifier/verifier.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:fcd3a6205fb2e39a2fb42f528bbb689c0fec8d9405e4857a87bcfa6ae4857189
+  rule_id: AST4
+  file: src/security_maintainer/verifier/verifier.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f61d026d75051a988e586178baf8871e6d583788bf44a45e51ce6c75a29ba188
+  rule_id: E1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:a167c43e48545552bd8ddd954dd77111389150f6331e3b45cc82cd8ea2399dd2
+  rule_id: E1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:29209265baaea70ecb497eafc4fdc16d04b1a9cc7da349c9372ba89a7650d391
+  rule_id: E1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:8e2429bcf82f2025b855bf8458cb90d1fa1708fbff1d4de03b69a69208f1187b
+  rule_id: E1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f98285347ccf81bd776025e061d058dd2679b3167eb9f3dcc8832e0919596f7a
+  rule_id: E1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:4058e4f0a3e11c5aaa7c5b7b62df2f517dd793f6e1fc41b3e8d3849575440ac5
+  rule_id: E1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:d73af0da55ed6f604c6dea7dd4798098270a120929bf906bffe286028040897b
+  rule_id: E1
+  file: src/security_maintainer/advisories/epss.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:8a765ca5fc521c0ff69b94757756e32ee735d2d4e095909b9082fd91f2e69f0b
+  rule_id: E1
+  file: src/security_maintainer/advisories/msrc.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:520e405602b52e2f9f732e1b0a7c0c49548bcdd4327832bdc5176764f6f4a40f
+  rule_id: E1
+  file: src/security_maintainer/advisories/osv_client.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:2a1542284622944c40b3e40ce273e4c16089bb953279b54af349abf9d1590982
+  rule_id: EA1
+  file: data/cisa_kev_bundle.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:0224b596f6f5d9d64601bc305bb7e59894a6597b9b6b1e0c38f243a6ea262234
+  rule_id: EA1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:56eed1a7bdaf0bdeb1c7f4090c47cbbfde899a2e56d150ea85259282036850fc
+  rule_id: EA1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:41fc1fa5f8ccebbabf0091c3a36847efa7e5eea9d3cbd31c75525dad1373a1a1
+  rule_id: EA1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:2f1f1687ceea0f45db18e864d930098f685ef1a88d192892547d5d3e7c2727d9
+  rule_id: EA1
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:91df0245c613128f467410c30ec84c97f40e0da1192443c24ea2513d73f9a49f
+  rule_id: EA4
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:95fccfb9a44e4fbc6f55074d2c172f5335d1eaf3962167de43d44c5452f1b42e
+  rule_id: EA4
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:6fcdc058b0f776684f567a6e8176467dc3eff2626ff549f206e99776edbf534a
+  rule_id: EA4
+  file: src/security_maintainer/executor/runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:0e99ac11380cc802f107d9914ac08cb4816925750002f8c56770ace863f8c068
+  rule_id: PE2
+  file: ARQUITECTURA.md
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:c1d5e8995902820955822ca1c189d887d5eba0d0a105323da5c9cabc43313251
+  rule_id: PE2
+  file: README.md
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:03588111727a86802624d9474226548ed2528fe9de87e3495e72b0531ba1b884
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f8f637d2b4686e48aa42a2252e4d691f74718dbce88c3291cf9582fc9735c560
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:5a39c2fe4e13485f37ef376850cbf05e09729df0381d1f26401441610eda4fe7
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:b6caede8e2107e50a41ecaa6e560bd50b0362c1ca833113ea65ba8569cdca1d3
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:cf8185290b239ad039b160ede1c1aa34edf8958fbe268d7a17a3361e90dd307f
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:76140f34cd76ee75ecf371e38bf3fb7fa4b32faa9e1dc63fc52a0ad30a6dd52d
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:0f1a8cd672b133e05679bcca1fd60ae9cad9acfa3557b8de36b37f4d05864dfd
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:e196b2e85d5cf40229c044b95fc6b938060a91ae587ec3d2d38e5b6bb4153439
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:cc077f1e3645137cfe1b89961f6a52164ff4fb8da66d5631d35e4de9a4487879
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:45186468447491b0aac2c25baad1b5af8e0de563f146d8c9be17ad288403d910
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:0fec08db7ac1bc9a0dc340e6cded2f4cea70d7c6a3af268d300dd1c85143ec1e
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:cfbb09de3a7dfcfbb89fbac06efd19692175e3004dc320bc4c169eedf8e574e0
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:d932300d736e23eb677d5aa715dda648651c338767d21efa8bc59ee7c76c872d
+  rule_id: PE2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:75e42c4edba99e2e00a586015fde793002f807d0314f662ca5ad8819318f7ce8
+  rule_id: PE2
+  file: src/security_maintainer/executor/wsl_runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:6bcb7a2a8b4c3e4688faa2f0ba5cf776dd02b1d33e42ff594344e370c57faefa
+  rule_id: PE2
+  file: src/security_maintainer/executor/wsl_runner.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:3079300f2c187e756aa8bbe36da175ee9f44e3447d28dac6781005e00df5a795
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:63050eabcf448093ed1a1d2edf0a72edd43bfe59611fe90df3a9d8272a3d3b04
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:89ea801ae1e647b1dfa1b62ec12477c004a64f9683e6e78f6aa6d6a105f9bfb6
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f7ecb3710b31fe7d8c39e7f023791bd4a12559ad6776c083e456b03e725bd2ce
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f99bba8ce5b1bf3f905043f17670e5029d8c29128779886328c121a7edd4f7d4
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:420221c5e5480b542d207f67e9a0fa4c2b66cae88b0a4021ecee27bd2ab6531f
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f9d4fc65b41ead1e0940d2e92a9a7d56f28e1b429e7ad6ad59cbcd1432b2b7b0
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:574decdd347a6ec172a29d4aa0ec13d85766050ab0b2c3295e1884757897072a
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:c4e0f2f5b22660d421be128387a0fdd74dbd20d37a42284c813df83aa6b3049e
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f3ea560488755dcfbad51d4d2f1c63b1bd02407f40cfd385abc1d5c2777097f6
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:c1f4cf7f72d59dcfe9df3f3bbce5510b2936f3bee465873879f6d22f5a0e8e95
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:6f077d2e09dc491921ab5027b0d7215e345336468624da473552e585e5f20d9a
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f68ab08bf5e9e879c991dcb4f6f764422b4f6905089ff969c6ca5b7cd38902cb
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:72311f93db43c005f05cdeb1088bec2d75c8745bbfae2bc531ffa2827e27cb89
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:a5ede7798e8d93d3d402e51710eb80dcd2bcd08c52988fdc39581804912a3777
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:5b7433893233b3ceb586be68160eaa6dc74bb8a5a85215b1d984894b4ea39562
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:4e06121b0fd84b93e6608ba2dce81435855c0ef0f4cb82cedbba38d904ccd55c
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:6debec4a758af0faac8232616f5bbe36641f3da5038e685db3eef92e36e15fcd
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:3ecec79a05e32b6cd81fe7ae2efd08d2a0884645870d86d8b38b2c012cbf1401
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:2b63a27db65ceea6677c2b13978d1eea5324666e8fd7acab4a3093617a210c57
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:1fbd9205044e13596e6dc163248c66876f5a4bb357d720c69486b2bb7da2885a
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:adac835c3dbc25081f0a17b35f43853d732872f0e0807bc754a5687c728da8ab
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:4e3c9d01bab1ba6c0119b5e9a047305d500669a3fe583299075f4461a33da97f
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:8efbd92c3a5cd38729c2f31cf8c3715c5fcae07eff47a147e628a369dee22b61
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:2e3aa45d759139212e414c89d583f99a68e05733519212e445da7a16c6ae36a6
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:86a618984024cdfb9ad2fddb8483fdda4106288420bf2581fb1a826e4fe2a44d
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:25f7b3dfb9838c0e726c528bb35e612f6ccfb820d7e7ef3a032af64bd267de9f
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:dc5cebc43e1fab9b8b3c9c1ed34e14c47f543e6c689c102c92ae9e4bc9a5939d
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:fa77fa996a65ed60d0f0649c28d0833c159c3051b7a2e8d540ac9b7f31a56a54
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:b794e06fb67795c34bd57135f120bdc041b16338824ff8248551c70255c93054
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:3c130070c68c16c26f6e2c855908189b8e2c8ec7afba49276b41485624a9c65c
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:aa9890e8480f39d01efbe7dce243c853c012d7920d03c4cfae4d3cd480ae10d0
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:ed6ed703408efea8573b73e8559650c0bec402db549a939771e53cf137010421
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:f0c44321f5b3f5967d16edb157bac36073744f532d1d965a04e45fccf9479980
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:3786403cc06364b87f7edf63d304edebc6442692b0c2a4dbfa3d027f298c576f
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:65a83d83eb0b4eadf2698948d5e97fc54db218defb0514de73ce043935cfcd8c
+  rule_id: RA2
+  file: scan_results.json
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:e6c0980b531056b157c9447a15d99b9250d961801abca26cbdefcac99297e8a2
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:eef6e7effab04c0d82d1f2b34e7217a6148401f4510587e7dbc2de51ca0b66b9
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:7d7698f062aa3314631e270d10671b2e619ef30219da7060a6c7d8355a4e2a20
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:42d303e548ce0d139ee49697d722f3dc959c2f3567cf4290f2b254a6daf4dd2c
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:9d62d1401f06a80430ea762b104dd304c0e05839adb81847cc3a5c1ece041404
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:522df060666c947efb295d81419f14b7bb51b3eea11997bb2b23fc70ba3edca1
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:a7f6073c71bd167c8dc4ef14c206dd9354b8c827ccea03bb99bfe8ea6c510798
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:a2608862ae9d13394fd95253f48f5f0967076f373554c57b9732a482ed199691
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:a65c76a3a779131175dc9a8020504ee128445179dbbfbcba6c3a07af17377ac0
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:a5b1aa76555ccb6291fae1f7e7bf71885acc4fc44640a55d14fa957e70d4b0f7
+  rule_id: RA2
+  file: src/security_maintainer/inventory/macos.py
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:476c778661e0c9f194e7fc53c5bc7c2604dc119a97ac746852e765895a807d14
+  rule_id: SC4
+  file: pyproject.toml
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:96c60ad0fb05f09487d92e5d32d54867e51810bb3a11680d5f416ded4f7a1208
+  rule_id: SC4
+  file: pyproject.toml
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)
+- hash: sha256:e183fca72f82d418e70f1dd9f18e0d8e75fc361b8c2a97b2653b995aa9939228
+  rule_id: SC4
+  file: pyproject.toml
+  reason: Legitimate deterministic security maintainer operations (least privilege
+    subprocess and authorized inventory)

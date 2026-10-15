@@ -176,9 +176,7 @@ Para desinstalar la skill:
 openclaw skills remove security-maintainer
 ```
 
-Para eliminar los archivos de configuración local si ya no se requieren:
-- En Windows: `Remove-Item -Recurse -Force "$HOME\.security-maintainer"`
-- En macOS/Linux: `rm -r ~/.security-maintainer`
+Para restablecer los datos de caché y configuración, se puede eliminar manualmente el directorio de datos del usuario (`.security-maintainer` en el directorio de inicio).
 
 ---
 
