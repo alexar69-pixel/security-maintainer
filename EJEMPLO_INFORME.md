@@ -41,13 +41,13 @@
 - **Huella SHA-256:** `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
 - **Caducidad:** 2026-10-14T11:00:00Z  
 
-| ID Acción | Producto | Tipo | Versión Objetivo | Privilegios | Reinicio | Estado |
+| ID Acción | Producto | Tipo | Versión Objetivo | Nivel Privilegio | Reinicio | Estado |
 | :--- | :--- | :--- | :--- | :---: | :---: | :--- |
-| `act-01` | `curl` | Parche Seguridad | `8.9.1` | sudo | No | **executed_verified** |
-| `act-02` | `openssl` | Parche Seguridad | `3.0.13-0ubuntu3.4` | sudo | No | **executed_verified** |
-| `act-03` | `Git` | Parche Seguridad | `2.45.1` | user | No | **executed_verified** |
-| `act-04` | `Windows Update KB5044284` | Parche Seguridad | latest | admin | Sí | **pending_reboot** |
-| `act-05` | `PowerToys` | Actualización | `0.85.1` | user | No | **executed_verified** |
+| `act-01` | `curl` | Parche Seguridad | `8.9.1` | Delegado (Paquetes) | No | **executed_verified** |
+| `act-02` | `openssl` | Parche Seguridad | `3.0.13-0ubuntu3.4` | Delegado (Paquetes) | No | **executed_verified** |
+| `act-03` | `Git` | Parche Seguridad | `2.45.1` | Usuario Estándar | No | **executed_verified** |
+| `act-04` | `Windows Update KB5044284` | Parche Seguridad | latest | Sistema Elevado | Sí | **pending_reboot** |
+| `act-05` | `PowerToys` | Actualización | `0.85.1` | Usuario Estándar | No | **executed_verified** |
 
 ---
 

@@ -1,7 +1,12 @@
 <#
 .SYNOPSIS
+    Deterministic script for applying approved patches or updates on Windows.
+    Strictly validates arguments. Does not execute arbitrary strings.
     Script determinista para aplicar parches o actualizaciones en Windows.
     Valida argumentos estrictamente. No utiliza cadenas arbitrarias.
+.DESCRIPTION
+    Safely executes WinGet or Windows Update installation commands following
+    least privilege principles and cryptographic action approval.
 #>
 
 [CmdletBinding()]

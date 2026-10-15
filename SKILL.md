@@ -1,6 +1,6 @@
 ---
 name: security-maintainer
-description: "Mantiene actualizado el software de Windows y distribuciones WSL, detecta vulnerabilidades conocidas (CVE, CISA KEV, VulnCheck, EPSS, NVD, OSV, MSRC y Ubuntu USN) y aplica parches autorizados con verificación post-remediación."
+description: "Universal security maintenance skill for Windows, macOS, and Linux/WSL. Audits installed host and environment software, correlates with vulnerability intelligence feeds (OSV, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC, Ubuntu Security), detects listening network processes exposure, and executes cryptographic-hash approved updates with post-remediation verification."
 user-invocable: true
 metadata:
   version: "1.1.0"
@@ -8,8 +8,10 @@ metadata:
   author: "OpenClaw Community"
   category: "security-and-maintenance"
   environments:
-    - "wsl"
     - "windows-host"
+    - "macos"
+    - "linux"
+    - "wsl"
   tags:
     - "security"
     - "vulnerability-management"
@@ -21,29 +23,44 @@ metadata:
     - "msrc"
     - "patch-management"
     - "winget"
-    - "wsl"
+    - "homebrew"
     - "apt"
+    - "wsl"
 approval-policy:
   default-mode: "ask"
   require-plan-hash: true
   allow-auto-mode: false
+permissions:
+  allowed-tools:
+    - "read_file"
+    - "run_command"
+  scope:
+    read-only:
+      - "system-inventory"
+      - "vulnerability-feeds"
+      - "local-project-manifests"
+      - "network-listening-ports"
+    execution:
+      - "authorized-package-managers"
+    blocked:
+      - "silent-privilege-escalation"
+      - "unauthorized-reboots"
+      - "system-modification-without-plan-hash"
 triggers:
-  - "Revisa las vulnerabilidades de mi PC y WSL"
-  - "Busca actualizaciones de todo el software"
-  - "Actualiza las aplicaciones permitidas"
-  - "Corrige las vulnerabilidades que tengan parche"
-  - "Muéstrame las críticas pendientes"
-  - "Activa actualizaciones automáticas para WSL"
-  - "Pídeme permiso antes de actualizar Windows"
-  - "Analiza sin realizar cambios"
-  - "Excluye este programa"
-  - "Comprueba si quedó solucionado"
-  - "Muéstrame lo que no puedes actualizar"
+  - "security-maintainer: audita el software del sistema y vulnerabilidades"
+  - "security-maintainer: busca actualizaciones de seguridad pendientes"
+  - "security-maintainer: genera un plan de remediación para vulnerabilidades"
+  - "security-maintainer: aplica el plan de seguridad aprobado"
+  - "security-maintainer: verifica el estado de las correcciones de seguridad"
+  - "Revisa las vulnerabilidades de mi sistema y software"
+  - "Audita las aplicaciones desactualizadas y CVEs conocidos"
+  - "Genera un plan de parches de seguridad para mis programas"
+  - "Verifica si los parches de seguridad quedaron solucionados"
 ---
 
 # Security Maintainer para OpenClaw
 
-Skill para OpenClaw diseñada para auditar software, detectar vulnerabilidades conocidas (CVE, CISA KEV, OSV, MSRC y trackers de distribuciones Linux) y aplicar parches oficiales de forma determinista y verificada en el anfitrión Windows y sus distribuciones WSL.
+Skill universal para OpenClaw diseñada para auditar software en Windows, macOS, distribuciones Linux y entornos WSL. Detecta vulnerabilidades conocidas (CVE, CISA KEV, VulnCheck KEV, OSV, FIRST EPSS, NIST NVD, MSRC y trackers de distribuciones) e inspecciona procesos a la escucha en red asociados a software auditado. Aplica remediaciones de forma estrictamente determinista y verificada mediante planes autorizados con huella criptográfica SHA-256.
 
 ## Reglas Fundamentales de Seguridad
 

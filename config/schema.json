@@ -78,12 +78,18 @@
     },
     "projects": {
       "type": "object",
+      "description": "Optional paths to inspect local project package manifests (package.json, requirements.txt) for known security vulnerabilities.",
       "properties": {
         "registered_paths": {
           "type": "array",
+          "description": "List of explicit filesystem directories where project manifests should be audited for supply-chain vulnerabilities.",
           "items": { "type": "string" }
         },
-        "auto_run_tests": { "type": "boolean", "default": true }
+        "auto_run_tests": {
+          "type": "boolean",
+          "description": "Whether to verify project test suites after applying dependency updates.",
+          "default": true
+        }
       }
     },
     "advisories": {

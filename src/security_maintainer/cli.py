@@ -273,7 +273,7 @@ def cmd_apply(args, config: Dict[str, Any], fixture_bundle: Optional[Dict[str, A
         return 2
 
     print(f"[*] Aprobación verificada para plan {plan_id} (Huella: {plan_hash[:12]}...).")
-    cache, kev, distro_tracker, osv, planner, executor, verifier, json_rep, md_rep = get_components(config, fixture_bundle)
+    cache, kev, vulncheck, epss, nvd, msrc, ubuntu_sec, enricher, distro_tracker, osv, planner, executor, verifier, json_rep, md_rep = get_components(config, fixture_bundle)
 
     # 2. Ejecutar acciones
     exec_results = executor.execute_plan(plan)
@@ -289,7 +289,16 @@ def cmd_apply(args, config: Dict[str, Any], fixture_bundle: Optional[Dict[str, A
 
     # 4. Generar informe post-remediación
     items = run_inventory(config, plan.environment, fixture_bundle)
-    coverage = calculate_coverage(items, False, False)
+    sources_status = {
+        "OSV.dev": not osv.last_query_failed,
+        "CISA KEV": kev.last_sync_success,
+        "VulnCheck KEV": vulncheck.last_sync_success,
+        "FIRST EPSS": not epss.last_query_failed,
+        "NIST NVD": not nvd.last_query_failed,
+        "MSRC": not msrc.last_query_failed,
+        "Ubuntu Security": not ubuntu_sec.last_query_failed,
+    }
+    coverage = calculate_coverage(items, sources_status)
     md_output = md_rep.generate_report(plan.environment, "apply", coverage, items, {}, plan, verified_results)
     json_rep.generate_report(plan.environment, "apply", coverage, items, {}, plan, verified_results)
 

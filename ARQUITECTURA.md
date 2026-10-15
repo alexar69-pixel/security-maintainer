@@ -104,7 +104,7 @@ stateDiagram-v2
    - La información obtenida de OSV.dev, GitHub Advisories o catálogos CVE se procesa estrictamente como texto/metadatos no confiables. No se interpreta código ni sintaxis de shell contenida en descripciones.
 3. **Control de Privilegios:**
    - Si una acción de Windows requiere permisos de Administrador y el proceso se ejecuta como usuario estándar, la acción se marca como `BLOCKED_PERMISSIONS` y no se intenta invocar `runas` ni scripts ocultos de elevación.
-   - En WSL, si la acción requiere `sudo`, se comprueba `sudo -n true`. Si se requiere contraseña interactiva, se bloquea la acción indicando cómo ejecutarla manualmente.
+   - En Linux/WSL, las operaciones de paquetes que requieran privilegios delegados verifican de antemano el acceso no interactivo (`sudo -n true`). Si se requiere elevación interactiva no delegada, la acción se bloquea inmediatamente (`BLOCKED_PERMISSIONS`) y se devuelve la instrucción para ejecución manual por el operador.
 4. **Bloqueo de Concurrencia:**
    - Se utiliza un archivo de bloqueo en `~/.security-maintainer/maintainer.lock` con PID registrado y verificación de proceso activo para impedir colisiones o corrupciones de gestores de paquetes.
 5. **Caducidad e Inmutabilidad de Planes:**

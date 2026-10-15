@@ -157,35 +157,28 @@ python3 -m security_maintainer.cli report
 
 ## 8. Programación de Revisiones Periódicas
 
-Para programar auditorías automáticas periódicas (en modo de solo lectura `audit`), puedes utilizar:
+Para programar auditorías automáticas periódicas (en modo de solo lectura `audit`), se recomienda utilizar el comando `/schedule` integrado de OpenClaw:
 
-### Opción 1: Tarea Programada de OpenClaw (`/schedule`)
 ```text
-/schedule cron="0 9 * * 1" prompt="Revisa las vulnerabilidades de mi PC y WSL y genera un informe de auditoría"
-```
-
-### Opción 2: Cron tradicional en WSL
-Añade a tu `crontab -e`:
-```cron
-0 9 * * 1 /usr/bin/python3 -m security_maintainer.cli audit --all > /dev/null 2>&1
+/schedule cron="0 9 * * 1" prompt="Revisa las vulnerabilidades de mi PC y genera un informe de auditoría"
 ```
 
 > [!IMPORTANT]
-> Las ejecuciones programadas se ejecutan de forma segura en modo `audit` o `ask`. Nunca aplicarán cambios que no hayan sido aprobados explícitamente con su huella criptográfica.
+> Las auditorías periódicas programadas se ejecutan exclusivamente en modo de solo lectura (`audit`). La skill no aplica cambios automáticos ni establece procesos residentes o tareas persistentes en el sistema operativo.
 
 ---
 
 ## 9. Desinstalación
 
-Para desinstalar la skill completamente:
+Para desinstalar la skill:
 
 ```bash
-# Si se instaló con ClawHub:
-clawhub uninstall @openclaw/security-maintainer
-
-# Limpieza de caché local e historial (opcional):
-rm -rf ~/.security-maintainer
+openclaw skills remove security-maintainer
 ```
+
+Para eliminar los archivos de configuración local si ya no se requieren:
+- En Windows: `Remove-Item -Recurse -Force "$HOME\.security-maintainer"`
+- En macOS/Linux: `rm -r ~/.security-maintainer`
 
 ---
 
