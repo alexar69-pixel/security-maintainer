@@ -1,5 +1,6 @@
 """
-Ejecutor de acciones de actualización en el host Windows sin elevación silenciosa.
+Windows Action Runner / Ejecutor de acciones en el host Windows sin elevación silenciosa.
+Enforces deterministic execution, admin privilege checks, and strict binary allowlists.
 """
 
 from __future__ import annotations
@@ -8,15 +9,20 @@ import subprocess
 import shutil
 import ctypes
 import os
+from pathlib import Path
 from typing import Dict, Any, Optional
 
 from ..models import PlanAction, ExecutionResult, ActionStatus, ManagerType
 
 logger = logging.getLogger(__name__)
 
+ALLOWED_WINDOWS_BINARIES = {
+    "winget", "winget.exe", "powershell", "powershell.exe", "cmd.exe", "msiexec", "msiexec.exe"
+}
+
 
 def is_windows_admin() -> bool:
-    """Comprueba si el proceso actual tiene privilegios de Administrador en Windows."""
+    """Checks if the current process holds Administrator rights in Windows."""
     try:
         return bool(ctypes.windll.shell32.IsUserAnAdmin())
     except Exception:
@@ -24,7 +30,7 @@ def is_windows_admin() -> bool:
 
 
 class WindowsRunner:
-    """Ejecuta acciones autorizadas en Windows con control estricto de privilegios y argumentos."""
+    """Executes authorized update actions on Windows with privilege and binary controls."""
 
     def __init__(self, config: Dict[str, Any], fixture_results: Optional[Dict[str, Any]] = None):
         self.config = config
@@ -62,7 +68,31 @@ class WindowsRunner:
                     )
                 )
 
-        # 2. Ejecución determinista
+        # 2. Validación de allowlist de ejecutables para prevenir ejecución arbitraria
+        if not action.exact_command or not isinstance(action.exact_command, list):
+            return ExecutionResult(
+                action_id=action.action_id,
+                product_name=action.product_name,
+                manager=action.manager,
+                success=False,
+                exit_code=1,
+                status=ActionStatus.FAILED,
+                error_message="Comando inválido o vacío."
+            )
+
+        binary_name = Path(action.exact_command[0]).name.lower()
+        if binary_name not in ALLOWED_WINDOWS_BINARIES:
+            return ExecutionResult(
+                action_id=action.action_id,
+                product_name=action.product_name,
+                manager=action.manager,
+                success=False,
+                exit_code=126,
+                status=ActionStatus.BLOCKED_PERMISSIONS,
+                error_message=f"Ejecutable no autorizado en la lista de permitidos de Windows: {binary_name}"
+            )
+
+        # 3. Ejecución determinista
         try:
             res = subprocess.run(
                 action.exact_command,

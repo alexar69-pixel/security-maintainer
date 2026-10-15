@@ -1,5 +1,6 @@
 """
-Verificación rigurosa post-modificación de versión efectiva, servicios y reinicios pendientes.
+Remediation Verifier / Verificador riguroso post-modificación.
+Validates effective package versions, service statuses, and pending reboots across Windows, macOS, and Linux/WSL.
 """
 
 from __future__ import annotations
@@ -93,6 +94,38 @@ class RemediationVerifier:
                 try:
                     res = subprocess.run(
                         [wsl_bin, "-d", distro_name, "-e", "dpkg-query", "-W", "-f=${Version}", action.product_id],
+                        capture_output=True,
+                        text=True,
+                        timeout=10
+                    )
+                    if res.returncode == 0 and res.stdout.strip():
+                        return res.stdout.strip()
+                except Exception:
+                    pass
+
+        elif action.environment == EnvironmentType.MACOS and action.manager == ManagerType.HOMEBREW:
+            brew_bin = shutil.which("brew")
+            if brew_bin:
+                try:
+                    res = subprocess.run(
+                        [brew_bin, "list", "--versions", action.product_id],
+                        capture_output=True,
+                        text=True,
+                        timeout=10
+                    )
+                    if res.returncode == 0 and res.stdout.strip():
+                        parts = res.stdout.strip().split()
+                        if len(parts) >= 2:
+                            return parts[1]
+                except Exception:
+                    pass
+
+        elif action.environment == EnvironmentType.LINUX and action.manager == ManagerType.APT:
+            dpkg_bin = shutil.which("dpkg-query")
+            if dpkg_bin:
+                try:
+                    res = subprocess.run(
+                        [dpkg_bin, "-W", "-f=${Version}", action.product_id],
                         capture_output=True,
                         text=True,
                         timeout=10

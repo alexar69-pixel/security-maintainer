@@ -1,20 +1,26 @@
 """
-Ejecutor de acciones de actualización en distribuciones WSL seleccionadas.
+WSL Action Runner / Ejecutor de acciones en distribuciones WSL.
+Enforces non-interactive sudo verification, distribution targeting, and package manager allowlists.
 """
 
 from __future__ import annotations
 import logging
 import subprocess
 import shutil
+from pathlib import Path
 from typing import Dict, Any, Optional
 
 from ..models import PlanAction, ExecutionResult, ActionStatus, ManagerType
 
 logger = logging.getLogger(__name__)
 
+ALLOWED_WSL_MANAGERS = {
+    "apt", "apt-get", "dpkg", "apk", "dnf", "yum", "pacman", "zypper", "pip", "pip3", "npm", "flatpak", "snap"
+}
+
 
 class WSLRunner:
-    """Ejecuta acciones autorizadas dentro de distribuciones WSL de forma segura."""
+    """Executes authorized update actions inside targeted WSL distributions."""
 
     def __init__(self, config: Dict[str, Any], fixture_results: Optional[Dict[str, Any]] = None):
         self.config = config
@@ -67,7 +73,31 @@ class WSLRunner:
                     )
                 )
 
-        # 2. Construir comando para WSL
+        # 2. Validación de gestores autorizados en WSL
+        if not action.exact_command or not isinstance(action.exact_command, list):
+            return ExecutionResult(
+                action_id=action.action_id,
+                product_name=action.product_name,
+                manager=action.manager,
+                success=False,
+                exit_code=1,
+                status=ActionStatus.FAILED,
+                error_message="Comando WSL inválido o vacío."
+            )
+
+        cmd_binary = Path(action.exact_command[0]).name.lower()
+        if cmd_binary not in ALLOWED_WSL_MANAGERS:
+            return ExecutionResult(
+                action_id=action.action_id,
+                product_name=action.product_name,
+                manager=action.manager,
+                success=False,
+                exit_code=126,
+                status=ActionStatus.BLOCKED_PERMISSIONS,
+                error_message=f"Gestor no autorizado en distribuciones WSL: {cmd_binary}"
+            )
+
+        # 3. Construir comando para WSL
         full_cmd = [wsl_bin, "-d", distro_name, "-e"]
         if action.required_privileges == "sudo":
             full_cmd.append("sudo")

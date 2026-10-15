@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "security-maintainer"
-version = "1.0.0"
+version = "1.2.2"
 description = "OpenClaw skill for auditing and managing Windows and WSL software patches and vulnerabilities"
 readme = "README.md"
 authors = [{ name = "OpenClaw Community", email = "community@openclaw.dev" }]

@@ -121,16 +121,20 @@ execution:
 
 ---
 
-## 6. Uso desde OpenClaw (Lenguaje Natural)
+## 6. Comandos e Invocación desde OpenClaw
 
-Puedes interactuar con la skill en lenguaje natural directamente en el chat de OpenClaw:
+La skill está diseñada para responder de manera determinista y acotada ante los siguientes disparadores específicos:
 
-- *"Revisa las vulnerabilidades de mi PC y WSL"* -> Ejecuta una auditoría de solo lectura.
-- *"Busca actualizaciones de todo el software"* -> Genera un plan de mantenimiento.
-- *"Corrige las vulnerabilidades que tengan parche"* -> Construye el plan, muestra la huella SHA-256 y solicita confirmación.
-- *"Aprobar plan <ID>"* -> Aplica las acciones aprobadas verificando la integridad de la huella.
-- *"Muéstrame lo que no puedes actualizar"* -> Lista software sin soporte o que requiere intervención manual.
-- *"Comprueba si quedó solucionado"* -> Re-inspecciona versiones efectivas.
+- `security-maintainer: audita el software del sistema y vulnerabilidades` -> Ejecuta una auditoría de inventario de solo lectura.
+- `security-maintainer: busca actualizaciones de seguridad pendientes` -> Genera un plan de mantenimiento en modo `ask`.
+- `security-maintainer: audita la seguridad de agentes de IA y servidores locales` -> Analiza puertos LLM, inyecciones de prompt y credenciales de IA.
+- `security-maintainer: genera un plan de remediación para vulnerabilidades` -> Construye el plan numerado y emite la huella SHA-256.
+- `security-maintainer: aplica el plan de seguridad aprobado` -> Requiere el identificador de plan y su huella SHA-256 para aplicar remediaciones.
+- `security-maintainer: verifica el estado de las correcciones de seguridad` -> Inspecciona versiones efectivas con `RemediationVerifier`.
+
+> [!NOTE]
+> **Límites de alcance (Scope Boundaries):**
+> La skill no atiende peticiones genéricas o ambiguas que no especifiquen el prefijo `security-maintainer:`. No realiza desinstalaciones destructivas, modificaciones de configuración fuera de los paquetes identificados, ni reinicios no supervisados.
 
 ---
 
@@ -146,8 +150,8 @@ python3 -m security_maintainer.cli plan --environment all
 # 3. Aplicar un plan aprobado formalmente
 python3 -m security_maintainer.cli apply --plan-id plan-a8f9c102 --plan-hash e3b0c442...
 
-# 4. Verificar estado post-remediación
-python3 -m security_maintainer.cli verify --environment all
+# 4. Verificar estado post-remediación con RemediationVerifier
+python3 -m security_maintainer.cli verify --environment all --plan-id plan-a8f9c102
 
 # 5. Ver último informe generado
 python3 -m security_maintainer.cli report
@@ -155,14 +159,17 @@ python3 -m security_maintainer.cli report
 
 ---
 
-Para ejecutar revisiones periódicas mediante el programador de tareas del agente, se puede configurar una tarea en OpenClaw:
+## 8. Automatización de Revisiones Periódicas
+
+Si el usuario desea programar auditorías periódicas, puede delegar la recurrencia al orquestador del agente en OpenClaw:
 
 ```text
 /schedule cron="0 9 * * 1" prompt="security-maintainer: audita el software del sistema y vulnerabilidades"
 ```
 
 > [!NOTE]
-> Las revisiones periódicas se ejecutan bajo el ciclo de vida del agente en modo de solo lectura (`audit`). No se instalan servicios daemon permanentes en el sistema operativo del anfitrión.
+> **Aviso de Persistencia del Orquestador:**
+> Esta programación es gestionada exclusivamente por el programador de tareas del agente OpenClaw en modo de solo lectura (`audit`). El software de la skill no registra deamons, servicios en segundo plano ni tareas programadas nativas en el sistema operativo del anfitrión.
 
 ---
 

@@ -3,6 +3,14 @@
 Todas las modificaciones notables de este proyecto se documentan en este archivo.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [1.2.2] - 2026-10-15
+
+### Modificado y Mejorado
+- **Verificación Rigurosa Post-Remediación:** Implementación real y trazable en `cmd_verify` consumiendo planes ejecutados mediante `RemediationVerifier`, soportando Windows, macOS y distribuciones Linux.
+- **Control de Ejecución de Binarios (Allowlist):** Restricción de subprocesos a una lista autorizada de gestores de paquetes reconocidos en Windows (`winget`, `powershell`), WSL (`apt`, `dpkg`, `dnf`, `pacman`) y macOS (`brew`, `mas`, `softwareupdate`).
+- **Alineación Estricta de Disparadores y Alcance:** Sincronización total entre `README.md` y `SKILL.md` con prefijo explícito `security-maintainer:`, eliminando disparadores vagos y delimitando los límites negativos de alcance (*scope boundaries*).
+- **Cumplimiento de Política Lingüística:** Soporte multilingüe en extracción de descripciones CVE de NVD y docstrings bilingües estándar en ejecutores y módulos de defensa de IA.
+
 ## [1.0.0] - 2026-10-14
 
 ### Añadido

@@ -84,10 +84,14 @@ class NvdClient:
                 severity = primary.get("baseSeverity", "UNKNOWN")
 
             desc = ""
-            for d in cve_obj.get("descriptions", []):
-                if d.get("lang") == "en":
-                    desc = d.get("value", "")
-                    break
+            descriptions = cve_obj.get("descriptions", [])
+            for d in descriptions:
+                val = d.get("value", "")
+                if val:
+                    if not desc or d.get("lang") in ("en", "es"):
+                        desc = val
+                        if d.get("lang") in ("en", "es"):
+                            break
 
             result = {
                 "cve_id": cve_id,

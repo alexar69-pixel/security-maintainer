@@ -1,10 +1,10 @@
 """
-Auditor de seguridad especializado en entornos de Inteligencia Artificial y Agentes.
-Detecta riesgos basados en OWASP Top 10 for LLMs / Agentic Systems y SkillSpector:
-- Exposición pública de servidores de inferencia locales (Ollama, LM Studio, etc.)
-- Envenenamiento de herramientas MCP y permisos excesivos (MCP Tool Poisoning)
-- Patrones de inyección de prompts en memorias, instrucciones y configuraciones
-- Fuga o recolección de credenciales de IA en variables de entorno y logs
+AI & Agent Security Auditor / Auditor de seguridad para agentes de IA y modelos locales.
+Detects risks based on OWASP Top 10 for LLMs / Agentic Systems and SkillSpector:
+- Exposure of unauthenticated local LLM inference engines (Ollama, LM Studio, etc.)
+- MCP Tool Poisoning and excessive permissions
+- Prompt injection patterns in prompt/context files
+- AI credential exposure in environment variables
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ from ..models import AISecurityFinding, AIThreatType, SeverityLevel
 
 logger = logging.getLogger(__name__)
 
-# Puertos estándar utilizados por motores locales de IA
+# Standard ports used by local AI inference engines
 KNOWN_LLM_SERVICES = {
     11434: ("Ollama", "Motor de inferencia LLM local de Ollama"),
     1234: ("LM Studio", "Servidor de modelos local de LM Studio"),
@@ -29,7 +29,7 @@ KNOWN_LLM_SERVICES = {
     5000: ("TextGenWebUI / KoboldAI", "Interfaz web y backend de inferencia"),
 }
 
-# Patrones típicos de inyección de instrucciones y manipulación de agentes
+# Instruction override and agent manipulation detection patterns
 PROMPT_INJECTION_PATTERNS = [
     (re.compile(r"(?i)(ignore\s+(all\s+)?(previous|prior|above)\s+instructions)", re.IGNORECASE), "Anulación explícita de instrucciones del sistema"),
     (re.compile(r"(?i)(you\s+are\s+now\s+in\s+unrestricted\s+mode|dan\s+mode|jailbreak)", re.IGNORECASE), "Intento de evasión de restricciones (Jailbreak)"),
@@ -37,7 +37,7 @@ PROMPT_INJECTION_PATTERNS = [
     (re.compile(r"[\u200B\u200C\u200D\uFEFF]", re.UNICODE), "Caracteres Unicode invisibles de ancho cero (posible ofuscación de prompt)"),
 ]
 
-# Variables de entorno sensibles asociadas a IA que no deben filtrarse
+# Sensitive AI environment variables that should not leak
 AI_SENSITIVE_ENV_VARS = [
     "OPENAI_API_KEY",
     "ANTHROPIC_API_KEY",
@@ -51,13 +51,13 @@ AI_SENSITIVE_ENV_VARS = [
 
 
 class AIAgentSecurityAuditor:
-    """Audita la postura de seguridad de agentes de IA, servidores locales y configuraciones MCP."""
+    """Audits AI agent security, local LLM exposure, and MCP tool configuration posture."""
 
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
 
     def audit_all(self, target_dirs: Optional[List[Path]] = None) -> List[AISecurityFinding]:
-        """Ejecuta todas las comprobaciones de seguridad de IA."""
+        """Runs all AI and agent security audits."""
         findings: List[AISecurityFinding] = []
         findings.extend(self.audit_local_llm_services())
         findings.extend(self.audit_mcp_configurations())
@@ -66,7 +66,7 @@ class AIAgentSecurityAuditor:
         return findings
 
     def audit_local_llm_services(self) -> List[AISecurityFinding]:
-        """Detecta si servidores LLM locales están escuchando en interfaces no seguras."""
+        """Audits local LLM inference engines listening on unauthenticated interfaces."""
         findings = []
         for port, (service_name, desc) in KNOWN_LLM_SERVICES.items():
             # Comprobar si el puerto está abierto en localhost
@@ -100,7 +100,7 @@ class AIAgentSecurityAuditor:
         return findings
 
     def audit_mcp_configurations(self) -> List[AISecurityFinding]:
-        """Audita archivos de configuración de MCP (Model Context Protocol) en busca de herramientas peligrosas."""
+        """Audits Model Context Protocol (MCP) server configuration files for excessive agency."""
         findings = []
         mcp_paths = [
             Path.home() / ".openclaw" / "mcp.json",
@@ -140,7 +140,7 @@ class AIAgentSecurityAuditor:
         return findings
 
     def audit_prompt_injections(self, search_paths: Optional[List[Path]] = None) -> List[AISecurityFinding]:
-        """Inspecciona archivos de instrucciones, contexto y prompts de agentes en busca de patrones maliciosos."""
+        """Audits agent instruction files and prompt contexts for prompt injection and override patterns."""
         findings = []
         paths_to_check = search_paths or [
             Path.home() / ".openclaw" / "workspace",
@@ -185,7 +185,7 @@ class AIAgentSecurityAuditor:
         return findings
 
     def audit_environment_secrets(self) -> List[AISecurityFinding]:
-        """Detecta claves de API y secretos de IA potencialmente accesibles por subagentes no restringidos."""
+        """Audits runtime environment variables for exposed AI service provider credentials."""
         findings = []
         exposed_keys = []
         for var in AI_SENSITIVE_ENV_VARS:
@@ -213,7 +213,7 @@ class AIAgentSecurityAuditor:
         return findings
 
     def _check_socket(self, host: str, port: int, timeout: float = 0.5) -> bool:
-        """Comprueba de forma rápida si un socket responde."""
+        """Performs a quick non-blocking socket connectivity check."""
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(timeout)

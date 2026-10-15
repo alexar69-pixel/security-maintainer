@@ -1,5 +1,6 @@
 """
-Coordinador de ejecución determinista con bloqueo de concurrencia y tolerancia a fallos.
+Deterministic Execution Coordinator / Coordinador de ejecución determinista.
+Manages concurrency locking, fault tolerance, and cross-platform execution order.
 """
 
 from __future__ import annotations
@@ -196,6 +197,30 @@ class PlanExecutor:
 
     def _execute_macos_action(self, action: PlanAction) -> ExecutionResult:
         import subprocess
+        allowed_macos = {"brew", "mas", "softwareupdate"}
+        if not action.exact_command or not isinstance(action.exact_command, list):
+            return ExecutionResult(
+                action_id=action.action_id,
+                product_name=action.product_name,
+                manager=action.manager,
+                success=False,
+                exit_code=1,
+                status=ActionStatus.FAILED,
+                error_message="Comando macOS inválido o vacío."
+            )
+
+        cmd_bin = Path(action.exact_command[0]).name.lower()
+        if cmd_bin not in allowed_macos:
+            return ExecutionResult(
+                action_id=action.action_id,
+                product_name=action.product_name,
+                manager=action.manager,
+                success=False,
+                exit_code=126,
+                status=ActionStatus.BLOCKED_PERMISSIONS,
+                error_message=f"Gestor no autorizado en macOS: {cmd_bin}"
+            )
+
         try:
             cmd = list(action.exact_command)
             if action.required_privileges in ["admin", "sudo"]:
