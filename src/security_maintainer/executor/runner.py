@@ -1,5 +1,5 @@
 """
-Deterministic Execution Coordinator / Coordinador de ejecución determinista.
+Deterministic Execution Coordinator.
 Manages concurrency locking, fault tolerance, and cross-platform execution order.
 """
 
@@ -28,7 +28,7 @@ LOCK_FILE = Path.home() / ".security-maintainer" / "maintainer.lock"
 
 
 class ConcurrencyLock:
-    """Evita ejecuciones simultáneas de planes mediante un archivo de bloqueo con PID."""
+    """Prevents simultaneous execution runs using an active PID lockfile."""
 
     def __init__(self, lock_path: Optional[Path] = None, timeout_seconds: int = 60):
         self.lock_path = lock_path or LOCK_FILE
@@ -167,7 +167,7 @@ class PlanExecutor:
         with ConcurrencyLock(timeout_seconds=self.config.get("execution", {}).get("lock_timeout_seconds", 60)):
             for action in plan.actions:
                 start_t = time.time()
-                logger.info(f"Ejecutando acción {action.action_id}: {action.product_name} ({action.target})")
+                logger.info(f"Executing action {action.action_id}: {action.product_name} ({action.target})")
 
                 if action.environment == EnvironmentType.WINDOWS:
                     res = self.windows_runner.execute_action(action)
@@ -183,15 +183,15 @@ class PlanExecutor:
                         success=False,
                         exit_code=1,
                         status=ActionStatus.FAILED,
-                        error_message="Tipo de entorno no soportado para ejecución directa."
+                        error_message="Environment type not supported for direct execution."
                     )
 
                 res.duration_seconds = time.time() - start_t
                 results.append(res)
 
-                # Si falla una acción, registrar y continuar con las independientes
+                # If an action fails, log and continue with independent ones
                 if not res.success:
-                    logger.warning(f"Acción {action.action_id} no exitosa: {res.error_message}")
+                    logger.warning(f"Action {action.action_id} failed: {res.error_message}")
 
         return results
 

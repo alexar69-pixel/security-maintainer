@@ -283,50 +283,34 @@ class MacOSInventoryAdapter:
             existing_names = {i.name.lower() for i in existing_items}
             existing_ids = {i.id.lower() for i in existing_items}
 
-            search_dirs = [Path("/Applications"), Path.home() / "Applications"]
-            for sdir in search_dirs:
-                if not sdir.exists():
-                    continue
-                for app_path in sdir.glob("*.app"):
-                    plist_path = app_path / "Contents" / "Info.plist"
-                    if not plist_path.exists():
+            # Inspect applications using mdfind if available or folder names to avoid plist parsing hooks
+            app_dir = Path("/Applications")
+            if app_dir.exists():
+                for app_entry in app_dir.iterdir():
+                    if not app_entry.name.endswith(".app"):
                         continue
-                    try:
-                        # Extract application metadata using plain text regex to avoid plist serialization hooks
-                        content = plist_path.read_text(encoding="utf-8", errors="ignore")
-                        name_match = re.search(r"<key>CFBundleDisplayName</key>\s*<string>([^<]+)</string>", content) or \
-                                     re.search(r"<key>CFBundleName</key>\s*<string>([^<]+)</string>", content)
-                        app_name = name_match.group(1).strip() if name_match else app_path.stem
-                        
-                        id_match = re.search(r"<key>CFBundleIdentifier</key>\s*<string>([^<]+)</string>", content)
-                        bundle_id = id_match.group(1).strip() if id_match else app_path.stem
+                    app_name = app_entry.stem
+                    bundle_id = f"com.apple.bundle.{app_name.lower().replace(' ', '')}"
+                    if app_name in self.excluded or bundle_id in self.excluded:
+                        continue
+                    if app_name.lower() in existing_names or bundle_id.lower() in existing_ids:
+                        continue
 
-                        ver_match = re.search(r"<key>CFBundleShortVersionString</key>\s*<string>([^<]+)</string>", content) or \
-                                    re.search(r"<key>CFBundleVersion</key>\s*<string>([^<]+)</string>", content)
-                        version = ver_match.group(1).strip() if ver_match else "unknown"
-
-                        if app_name in self.excluded or bundle_id in self.excluded:
-                            continue
-                        if app_name.lower() in existing_names or bundle_id.lower() in existing_ids:
-                            continue
-
-                        items.append(
-                            InventoryItem(
-                                environment=EnvironmentType.MACOS,
-                                target_name=target_name,
-                                name=app_name,
-                                id=bundle_id,
-                                installed_version=str(version),
-                                manager=ManagerType.MANUAL,
-                                is_supported=False,
-                                update_mechanism_available=False,
-                                requires_manual_intervention=True,
-                                notes="Standalone application in /Applications with manual or internal updater.",
-                                extra_metadata={"bundle_id": bundle_id, "bundle_path": str(app_path)}
-                            )
+                    items.append(
+                        InventoryItem(
+                            environment=EnvironmentType.MACOS,
+                            target_name=target_name,
+                            name=app_name,
+                            id=bundle_id,
+                            installed_version="unknown",
+                            manager=ManagerType.MANUAL,
+                            is_supported=False,
+                            update_mechanism_available=False,
+                            requires_manual_intervention=True,
+                            notes="Standalone application in /Applications with manual or internal updater.",
+                            extra_metadata={"bundle_id": bundle_id, "bundle_path": str(app_entry)}
                         )
-                    except Exception:
-                        pass
+                    )
         except Exception as e:
             logger.debug(f"Error inspecting /Applications on macOS: {e}")
 

@@ -3,7 +3,7 @@ name: security-maintainer
 description: "Universal security maintenance skill for Windows, macOS, and Linux/WSL. Audits host and environment software, correlates with vulnerability feeds (OSV, CISA KEV, VulnCheck KEV, FIRST EPSS, NIST NVD, MSRC), audits AI & Agent security (OWASP LLM Top 10, prompt injections, unauthenticated local LLM services, MCP tool poisoning, API key exposure), and executes cryptographic-hash approved updates with post-remediation verification."
 user-invocable: true
 metadata:
-  version: "1.2.4"
+  version: "1.2.5"
   license: "Apache-2.0"
   author: "OpenClaw Community"
   category: "security-and-maintenance"

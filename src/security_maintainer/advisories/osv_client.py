@@ -1,5 +1,5 @@
 """
-Cliente para la API de OSV (Open Source Vulnerabilities, https://osv.dev) con caché y reintentos.
+Client for the OSV (Open Source Vulnerabilities, https://osv.dev) API with caching and retry logic.
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ OSV_QUERY_URL = "https://api.osv.dev/v1/query"
 
 
 class OSVClient:
-    """Consulta vulnerabilidades conocidas en la base de datos distribuida de OSV."""
+    """Queries known package vulnerabilities against the distributed OSV database."""
 
     def __init__(
         self,
@@ -48,26 +48,26 @@ class OSVClient:
         self.last_query_failed = False
 
     def query_vulnerabilities(self, item: InventoryItem) -> List[Vulnerability]:
-        """Consulta vulnerabilidades para un componente específico deduplicando identificadores."""
+        """Queries vulnerabilities for a target component and deduplicates advisory identifiers."""
         ecosystem = self._map_ecosystem(item)
         if not ecosystem:
-            # Componentes sin mapeo a ecosistema (ej. software propietario genérico de Windows)
+            # Component does not map to an OSV ecosystem
             return []
 
         cache_key = f"{ecosystem}_{item.name}_{item.installed_version}"
 
-        # 1. Comprobar fixtures para pruebas
+        # 1. Check test fixtures
         if self.fixture_data and "osv" in self.fixture_data:
             mock_res = self.fixture_data["osv"].get(cache_key) or self.fixture_data["osv"].get(item.name)
             if mock_res is not None:
                 return self._parse_osv_response(mock_res, item)
 
-        # 2. Comprobar caché local
+        # 2. Check local advisory cache
         cached_data, is_valid, age = self.cache.get("osv", cache_key, ttl_hours=12)
         if cached_data and is_valid:
             return self._parse_osv_response(cached_data, item)
 
-        # 3. Realizar consulta HTTP con reintentos
+        # 3. Perform network query with exponential retries
         payload = {
             "version": item.installed_version,
             "package": {
@@ -84,7 +84,7 @@ class OSVClient:
         else:
             self.last_query_failed = True
             if cached_data:
-                logger.info(f"Usando datos de caché para {item.name} debido a fallo de red.")
+                logger.info(f"Using cached advisory data for {item.name} due to network unreachable.")
                 return self._parse_osv_response(cached_data, item)
             return []
 
@@ -103,9 +103,9 @@ class OSVClient:
             except urllib.error.HTTPError as he:
                 if he.code == 404:
                     return {"vulns": []}
-                logger.warning(f"Error HTTP consultando OSV ({he.code}): intento {attempt+1}/{self.max_retries}")
+                logger.warning(f"HTTP error querying OSV ({he.code}): attempt {attempt+1}/{self.max_retries}")
             except Exception as e:
-                logger.warning(f"Error de conexión con OSV: {e} (intento {attempt+1}/{self.max_retries})")
+                logger.warning(f"Connection failure connecting to OSV: {e} (attempt {attempt+1}/{self.max_retries})")
             time.sleep(1.0 * (attempt + 1))
         return None
 

@@ -1,6 +1,6 @@
 {
   "name": "security-maintainer",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Deterministic OpenClaw security skill responding strictly to 'security-maintainer:' command triggers to audit and remediate host software across Windows, macOS, and Linux/WSL environments using SHA-256 cryptographic approval.",
   "main": "SKILL.md",
   "license": "Apache-2.0",

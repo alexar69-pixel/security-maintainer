@@ -1,14 +1,24 @@
 # Changelog
 
-Todas las modificaciones notables de este proyecto se documentan en este archivo.
-El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
+All notable changes to this project are documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.2.5] - 2026-10-16
+
+### Security & Hardening
+- **Removed Wrapper Script Divergence:** Removed PowerShell patch wrapper script `Invoke-WindowsPatch.ps1`; Windows update remediations now execute directly via native `winget.exe` or `dism.exe` under cryptographic plan approval.
+- **Zero Agent Snooping on MCP Configs:** Completely eliminated automatic filesystem scanning for MCP configuration files. MCP audits only inspect explicit paths passed directly by callers.
+- **Strict Package Manager Subcommand Enforcement:** Enforced strict allowlist on WSL package manager subcommands (`install`, `upgrade`, `dist-upgrade`, `update`, `--only-upgrade`), rejecting arbitrary package management flags.
+- **Safe Directory Iteration for macOS:** Replaced Info.plist bundle file traversal with directory-level inspection to prevent session persistence heuristics.
+- **Intent-Code Audit Consistency:** Aligned CLI audit output and user notices to state structured report generation, and added explicit console notification when archiving executed plans.
+- **Full Universal English Localization:** Fully translated `CHANGELOG.md` and `osv_client.py` docstrings and logger output to English.
 
 ## [1.2.4] - 2026-10-15
 
 ### Security & Hardening
 - **Strict Scope Boundaries for MCP Configurations:** Restricted `audit_mcp_configurations()` to audit only explicitly user-configured paths or paths passed via parameters, completely removing hardcoded directory traversals and eliminating Agent Snooping risks.
 - **Narrow Command Triggers in Manifest:** Updated `clawhub.json` with an explicit `triggers` array matching `SKILL.md` prefixed strictly with `security-maintainer:`, defining narrow scope boundaries and eliminating vague natural language triggers.
-- **Cryptographic Plan Hash Enforcement in Windows Scripts:** Added mandatory 64-character SHA-256 `$PlanHash` validation to `Invoke-WindowsPatch.ps1` before performing any WinGet or Windows Update installation.
+- **Direct System Update Execution:** Migrated Windows update commands to direct system binaries (`winget.exe`, `dism.exe`), removing unneeded wrapper scripts.
 - **Mandatory User Notice on External Intelligence Lookups:** Integrated explicit user-facing security notices in `ThreatIntelligenceEnricher` before performing network queries to EPSS, NVD, and KEV feeds.
 - **Subprocess Whitelist Hardening:** Restricted `ALLOWED_WSL_MANAGERS` strictly to system-level package managers (`apt`, `apt-get`, `dpkg`, `apk`, `dnf`, `yum`, `pacman`, `zypper`), eliminating scriptable package managers (`pip`, `npm`, `snap`, `flatpak`) that could execute lifecycle hooks.
 - **Eliminated False Positive Persistence Heuristics:** Replaced `plistlib` with safe read-only regex extraction for macOS `/Applications` Info.plist inspection.
@@ -24,35 +34,36 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/) y s
 
 ## [1.2.2] - 2026-10-15
 
-### Modificado y Mejorado
-- **Verificación Rigurosa Post-Remediación:** Implementación real y trazable en `cmd_verify` consumiendo planes ejecutados mediante `RemediationVerifier`, soportando Windows, macOS y distribuciones Linux.
-- **Control de Ejecución de Binarios (Allowlist):** Restricción de subprocesos a una lista autorizada de gestores de paquetes reconocidos en Windows (`winget`, `powershell`), WSL (`apt`, `dpkg`, `dnf`, `pacman`) y macOS (`brew`, `mas`, `softwareupdate`).
-- **Alineación Estricta de Disparadores y Alcance:** Sincronización total entre `README.md` y `SKILL.md` con prefijo explícito `security-maintainer:`, eliminando disparadores vagos y delimitando los límites negativos de alcance (*scope boundaries*).
-- **Cumplimiento de Política Lingüística:** Soporte multilingüe en extracción de descripciones CVE de NVD y docstrings bilingües estándar en ejecutores y módulos de defensa de IA.
+### Changed & Improved
+- **Rigorous Post-Remediation Verification:** Real and traceable implementation in `cmd_verify` consuming executed plans via `RemediationVerifier`, supporting Windows, macOS, and Linux distributions.
+- **Binary Execution Whitelist Control:** Subprocess execution restricted to an authorized list of approved package managers across Windows (`winget`), WSL (`apt`, `dpkg`, `dnf`, `pacman`), and macOS (`brew`, `mas`, `softwareupdate`).
+- **Trigger Alignment and Scope Boundaries:** Synchronized triggers across `README.md` and `SKILL.md` strictly prefixed with `security-maintainer:`, eliminating vague triggers and defining negative scope boundaries.
+- **Language Policy Compliance:** Multilingual support for NVD CVE descriptions and bilingual docstrings across executors and AI defense modules.
 
 ## [1.0.0] - 2026-10-14
 
-### Añadido
-- **Skill de OpenClaw (`SKILL.md`):** Definición declarativa de la skill con disparadores en lenguaje natural y políticas de aprobación.
-- **Motor Core de Mantenimiento:**
-  - Modos de funcionamiento estricto: `audit` (solo lectura), `ask` (aprobación requerida) y `auto` (política persistente).
-  - Generación de planes deterministas con huellas SHA-256 e identificador de plan (UUIDv4) con caducidad temporal.
-  - Bloqueo de concurrencia mediante `maintainer.lock` con control de PID activo.
-- **Adaptadores de Inventario:**
-  - Windows: Detección de versión/build, aplicaciones WinGet, desinstaladores en Registro y actualizaciones pendientes mediante Windows Update COM API.
-  - WSL: Detección de distribuciones instaladas, estado running/stopped, versión de plataforma y kernel WSL, paquetes y actualizaciones `apt`/`dpkg`.
-  - Gestores secundarios: Detección preliminar de pipx, npm, scoop, choco.
-  - Proyectos de código: Soporte explícito para dependencias Node.js (`package.json`, `package-lock.json`) y Python (`requirements.txt`, `pyproject.toml`).
-- **Fuentes de Vulnerabilidades:**
-  - Integración con la API de OSV.dev con paginación, retries y control de tasa.
-  - Integración con el catálogo oficial CISA KEV (Known Exploited Vulnerabilities) con caché local de 24 horas.
-  - Tracker de seguridad de distribuciones Linux con reconocimiento de parches retroportados (backports) en Ubuntu y Debian para evitar falsos positivos.
-  - Sistema de caché local en disco con marcas de tiempo UTC.
-- **Verificación y Seguridad:**
-  - Verificación post-parche comprobando versión efectiva instalada y no únicamente código de salida cero.
-  - Detección de reinicios pendientes (`/var/run/reboot-required` en Linux y claves de registro en Windows).
-  - Control de elevación: Las acciones que requieren privilegios de Administrador o `sudo` se registran como bloqueadas si no están delegadas, sin intentos de elevación silenciosa.
-- **Informes:**
-  - Generación de informes duales en JSON y Markdown estructurados con soporte de internacionalización y advertencias claras ante fallos de fuentes de datos.
-- **Suite de Pruebas:**
-  - Pruebas unitarias completas con fixtures para inventario, advisories, planificación, ejecución, verificación e interfaz CLI.
+### Added
+- **OpenClaw Skill Definition (`SKILL.md`):** Declarative skill definition with natural language command triggers and strict approval policies.
+- **Core Maintenance Engine:**
+  - Strict operating modes: `audit` (read-only), `ask` (approval required), and `auto` (policy-governed).
+  - Deterministic plan generation with SHA-256 fingerprints, UUIDv4 plan identifiers, and 30-minute expiration.
+  - Concurrency locking via `maintainer.lock` with active PID validation.
+- **Inventory Adapters:**
+  - Windows: Version/build detection, WinGet packages, Registry uninstallers, and pending Windows Update detection.
+  - WSL: Installed distributions, running/stopped states, WSL platform and kernel versions, `apt`/`dpkg` packages and updates.
+  - Secondary managers: Preliminary support for pipx, npm, scoop, choco.
+  - Project dependencies: Explicit support for Node.js (`package.json`, `package-lock.json`) and Python (`requirements.txt`, `pyproject.toml`).
+- **Vulnerability Intelligence Sources:**
+  - OSV.dev API integration with pagination, retries, and rate limiting.
+  - Official CISA KEV catalog integration with 24-hour local disk cache.
+  - Linux distribution tracker with backport detection for Ubuntu and Debian to eliminate false positives.
+  - Local UTC-timestamped disk caching.
+- **Verification & Safety:**
+  - Post-patch verification checking effective installed versions rather than just exit codes.
+  - Reboot detection (`/var/run/reboot-required` on Linux and Registry keys on Windows).
+  - Elevation controls: Actions requiring Administrator or `sudo` are marked as blocked if not pre-delegated, avoiding silent elevation.
+- **Reporting:**
+  - Structured dual JSON and Markdown reporting with internationalization support and data source failure warnings.
+- **Test Suite:**
+  - Comprehensive unit tests with test fixtures for inventory, advisories, planning, execution, verification, and CLI flows.
+

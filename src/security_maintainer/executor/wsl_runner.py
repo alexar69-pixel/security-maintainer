@@ -101,6 +101,23 @@ class WSLRunner:
                 error_message=f"Unauthorized package manager in WSL distribution: {cmd_binary}"
             )
 
+        # Enforce strict subcommand allowlist to prevent arbitrary package manager actions
+        ALLOWED_WSL_SUBCOMMANDS = {
+            "install", "upgrade", "dist-upgrade", "update", "-u", "-Syu", "-y", "--only-upgrade"
+        }
+        if len(action.exact_command) > 1:
+            subcmd = action.exact_command[1].lower()
+            if subcmd not in ALLOWED_WSL_SUBCOMMANDS and not subcmd.startswith("-"):
+                return ExecutionResult(
+                    action_id=action.action_id,
+                    product_name=action.product_name,
+                    manager=action.manager,
+                    success=False,
+                    exit_code=126,
+                    status=ActionStatus.BLOCKED_PERMISSIONS,
+                    error_message=f"Disallowed subcommand for package manager in WSL: {subcmd}"
+                )
+
         for arg in action.exact_command:
             if not isinstance(arg, str) or DANGEROUS_SHELL_CHARS_REGEX.search(arg):
                 return ExecutionResult(

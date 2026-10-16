@@ -130,7 +130,7 @@ def calculate_coverage(items: List[InventoryItem], sources_status: Dict[str, boo
 
 def cmd_audit(args, config: Dict[str, Any], fixture_bundle: Optional[Dict[str, Any]] = None):
     ai_active = getattr(args, "ai_defense", False) or getattr(args, "all", False)
-    print(f"[*] Starting security audit in read-only mode (Environment: {args.environment}, AI Defense: {'enabled' if ai_active else 'disabled'})...")
+    print(f"[*] Starting non-modifying security audit (Environment: {args.environment}, AI Defense: {'enabled' if ai_active else 'disabled'}). Generating structured report...")
     (
         cache, kev, vulncheck, epss, nvd, msrc, ubuntu_sec, enricher,
         distro_tracker, osv, planner, executor, verifier, json_rep, md_rep
@@ -314,18 +314,20 @@ def cmd_apply(args, config: Dict[str, Any], fixture_bundle: Optional[Dict[str, A
 
     print(md_output)
 
-    # Archivar plan ejecutado para verificación de versiones efectivas
+    # Archive executed plan for effective post-remediation version verification
     try:
         EXECUTED_PLANS_DIR.mkdir(parents=True, exist_ok=True)
+        executed_file = EXECUTED_PLANS_DIR / f"{plan_id}.json"
+        print(f"[*] Archiving verified execution results for plan {plan_id} to: {executed_file}")
         executed_data = {
             "plan": plan.to_dict(),
             "verified_results": [r.to_dict() for r in verified_results],
             "executed_at": datetime.now(timezone.utc).isoformat()
         }
-        with open(EXECUTED_PLANS_DIR / f"{plan_id}.json", "w", encoding="utf-8") as f:
+        with open(executed_file, "w", encoding="utf-8") as f:
             json.dump(executed_data, f, indent=2, ensure_ascii=False)
     except Exception as e:
-        logger.debug(f"No se pudo archivar el plan ejecutado: {e}")
+        logger.debug(f"Could not archive executed plan: {e}")
 
     # Limpiar plan pendiente
     try:

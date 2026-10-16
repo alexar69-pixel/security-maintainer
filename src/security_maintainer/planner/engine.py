@@ -156,11 +156,12 @@ class PlannerEngine:
             lims = "La versión anterior debe seguir existiendo en el repositorio de la distribución o en la caché local."
 
         elif item.manager == ManagerType.WINDOWS_UPDATE:
-            cmd = ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "Invoke-WindowsPatch.ps1", "-KBArticle", item.id]
+            kb_num = item.id.replace("KB", "").strip()
+            cmd = ["dism.exe", "/Online", "/Add-Package", f"/PackagePath:{item.id}"]
             privs = "admin"
             reboot = True
             verify = f"Consultar 'Get-HotFix -Id {item.id}' en Windows."
-            rollback = f"Desinstalación vía 'wusa.exe /uninstall /kb:{item.id.replace('KB', '')} /quiet /norestart'."
+            rollback = f"Desinstalación vía 'wusa.exe /uninstall /kb:{kb_num} /quiet /norestart'."
             lims = "Algunas actualizaciones acumulativas del kernel de Windows no permiten desinstalación permanente."
 
         elif item.manager == ManagerType.NODE_ENV:

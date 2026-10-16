@@ -19,7 +19,7 @@ from ..models import PlanAction, ExecutionResult, ActionStatus, ManagerType
 logger = logging.getLogger(__name__)
 
 ALLOWED_WINDOWS_BINARIES = {
-    "winget", "winget.exe", "powershell", "powershell.exe", "cmd.exe", "msiexec", "msiexec.exe"
+    "winget", "winget.exe", "powershell", "powershell.exe", "cmd.exe", "msiexec", "msiexec.exe", "dism", "dism.exe"
 }
 
 # Disallow shell metacharacters in individual command tokens

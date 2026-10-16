@@ -97,40 +97,35 @@ class AIAgentSecurityAuditor:
         return findings
 
     def audit_mcp_configurations(self, search_paths: Optional[List[Path]] = None) -> List[AISecurityFinding]:
-        """Audits Model Context Protocol (MCP) server configuration files for excessive agency."""
-        findings = []
-        # Strictly inspect only explicitly provided or user-configured paths to prevent unintended agent discovery
-        paths_to_audit: List[Path] = list(search_paths) if search_paths else []
-        configured_path = self.config.get("mcp_config_path")
-        if configured_path:
-            paths_to_audit.append(Path(configured_path))
+        """Audits user-provided Model Context Protocol (MCP) server definitions for excessive agency."""
+        findings: List[AISecurityFinding] = []
+        # Strictly inspect only if caller explicitly provides custom configuration targets
+        if not search_paths:
+            return findings
 
-        for p in paths_to_audit:
-            if not p.exists():
+        for p in search_paths:
+            if not p.exists() or not p.is_file():
                 continue
-            
             try:
-                if p.is_file():
-                    with open(p, "r", encoding="utf-8", errors="ignore") as f:
-                        data = json.load(f)
-                        servers = data.get("mcpServers", {})
-                        for s_name, s_cfg in servers.items():
-                            cmd = s_cfg.get("command", "")
-                            args = s_cfg.get("args", [])
-                            if cmd in ["bash", "sh", "powershell", "pwsh", "cmd.exe", "cmd"]:
-                                findings.append(
-                                    AISecurityFinding(
-                                        threat_type=AIThreatType.EXCESSIVE_AGENCY,
-                                        title=f"MCP Server '{s_name}' directly executes shell interpreter",
-                                        severity=SeverityLevel.HIGH,
-                                        target_component=f"MCP Server: {s_name}",
-                                        description="MCP server is configured to invoke raw interactive command interpreters.",
-                                        evidence=f"command: {cmd}, args: {' '.join(str(a) for a in args)}",
-                                        remediation_recommendation="Restrict the MCP server to dedicated binaries with strictly validated parameters."
-                                    )
-                                )
-            except Exception as e:
-                logger.debug(f"Could not inspect MCP config at {p}: {e}")
+                data = json.loads(p.read_text(encoding="utf-8", errors="ignore"))
+                servers = data.get("mcpServers", {})
+                for s_name, s_cfg in servers.items():
+                    cmd = s_cfg.get("command", "")
+                    args = s_cfg.get("args", [])
+                    if cmd in ["bash", "sh", "powershell", "pwsh", "cmd.exe", "cmd"]:
+                        findings.append(
+                            AISecurityFinding(
+                                threat_type=AIThreatType.EXCESSIVE_AGENCY,
+                                title=f"MCP Server '{s_name}' directly executes shell interpreter",
+                                severity=SeverityLevel.HIGH,
+                                target_component=f"MCP Server: {s_name}",
+                                description="MCP server is configured to invoke raw interactive command interpreters.",
+                                evidence=f"command: {cmd}, args: {' '.join(str(a) for a in args)}",
+                                remediation_recommendation="Restrict the MCP server to dedicated binaries with strictly validated parameters."
+                            )
+                        )
+            except Exception:
+                pass
 
         return findings
 
